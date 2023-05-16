@@ -5,12 +5,23 @@ import {AiFillStar} from "react-icons/ai";
 import {BsShieldFillCheck, BsFillSendFill} from "react-icons/bs";
 import FeaturesCard from "./FeaturesCard";
 import Button from "@/app/components/Button";
+import {motion} from "framer-motion";
 const Business = () => {
   const registerModal = useRegisterModal();
 
   return (
     <div className="flex flex-col py-6 lg:items-center lg:justify-around lg:flex-row">
-      <div className="flex flex-col">
+      <motion.div
+        initial={{opacity: 0, x: -50}}
+        animate={{
+          opacity: 1,
+          x: 0,
+          transition: {
+            duration: 1,
+          },
+        }}
+        className="flex flex-col"
+      >
         <h2 className="text-4xl tracking-tight font-extrabold leading-[40px] lg:leading-[50px]">
           Lorem ipsum dolor, <br className="hidden sm:block" /> sit amet consectetur adipisicing.
         </h2>
@@ -20,7 +31,7 @@ const Business = () => {
           praesentium ea vel tempore debitis qui soluta unde dolor.
         </p>
         <Button onClick={() => registerModal.onOpen()}>Start now</Button>
-      </div>
+      </motion.div>
       <div className="w-full lg:w-[75vh]">
         {features.map((feature) => (
           <FeaturesCard
