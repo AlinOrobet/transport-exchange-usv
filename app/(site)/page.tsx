@@ -25,7 +25,6 @@ const Home = async () => {
           <Features users={users} companies={companies} orders={orders} />
           <Subscription />
           <Contact />
-          <Footer />
         </div>
       </Container>
     </>
