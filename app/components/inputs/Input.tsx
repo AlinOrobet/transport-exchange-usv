@@ -4,7 +4,7 @@ import {FieldErrors, FieldValues, UseFormRegister} from "react-hook-form";
 import {IconType} from "react-icons";
 
 interface InputProps {
-  label: string;
+  label?: string;
   id: string;
   type?: string;
   required?: boolean;
@@ -14,6 +14,9 @@ interface InputProps {
   icon?: IconType;
   onClickIcon?: () => void;
   value?: any;
+  small?: boolean;
+  labelColorReverse?: boolean;
+  placeholder?: string;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -27,17 +30,27 @@ const Input: React.FC<InputProps> = ({
   icon: Icon,
   onClickIcon,
   value,
+  small,
+  labelColorReverse,
+  placeholder,
 }) => {
   return (
-    <div>
-      <label
-        htmlFor={id}
-        className={`block text-sm font-medium leading-6 ${
-          errors[id] ? "text-rose-500" : "text-dark"
-        }`}
-      >
-        {errors[id] ? errors[id]?.message?.toString() || errors[id]?.type?.toString() : label}
-      </label>
+    <div className="relative w-full">
+      {label && (
+        <label
+          htmlFor={id}
+          className={`block text-sm font-medium leading-6 ${
+            errors[id]
+              ? "text-rose-500"
+              : labelColorReverse
+              ? "text-dark dark:text-light"
+              : "text-dark"
+          }`}
+        >
+          {errors[id] ? errors[id]?.message?.toString() || errors[id]?.type?.toString() : label}
+        </label>
+      )}
+
       <div className="relative mt-2">
         <input
           id={id}
@@ -45,13 +58,14 @@ const Input: React.FC<InputProps> = ({
           autoComplete={id}
           disabled={disabled}
           value={value}
+          placeholder={placeholder || ""}
           {...register(id, {required})}
           className={`form-input
           block 
           w-full 
           rounded-md 
           border-0 
-          py-4
+          ${small ? "py-3" : "py-4"}
           text-gray-900 
           shadow-sm 
           ring-1 

@@ -25,7 +25,9 @@ const Navbar: React.FC<NavbarProps> = ({currentUser}) => {
   }, []);
   return (
     <div
-      className={`sticky top-0 w-full py-8 ${show ? "bg-light dark:bg-dark" : "bg-transparent"}`}
+      className={`sticky top-0 w-full py-8 ${
+        show ? "bg-light dark:bg-dark" : "bg-transparent"
+      } z-50`}
     >
       <div className="lg:hidden">
         <button

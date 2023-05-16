@@ -6,7 +6,7 @@ import {motion} from "framer-motion";
 const Hero = () => {
   const registerModal = useRegisterModal();
   return (
-    <section id="home" className="flex flex-col lg:h-[calc(100vh-7rem)] lg:flex-row">
+    <section id="home" className="flex flex-col lg:h-[calc(100vh-7rem)] lg:flex-row pt-32">
       <div className="flex flex-col items-start justify-center flex-1">
         <div
           className="flex flex-row items-center px-4 py-2 mb-2 rounded-md cursor-pointer bg-light_shadow dark:bg-dark_shadow"
