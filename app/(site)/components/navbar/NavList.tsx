@@ -5,16 +5,19 @@ import React from "react";
 import {navbarItems} from "./Navbar";
 import NavItem from "./NavItem";
 import {BsGithub, BsLinkedin} from "react-icons/bs";
+import useLoginModal from "@/app/hooks/useLoginModal";
+import useRegisterModal from "@/app/hooks/useRegisterModal";
+import {SafeUser} from "@/app/types";
 interface NavListProps {
-  currentUser?: boolean;
+  currentUser: SafeUser | null;
   row?: boolean;
   closeMobileNavbar?: () => void;
 }
 
 const NavList: React.FC<NavListProps> = ({currentUser, row, closeMobileNavbar}) => {
   const router = useRouter();
-  //const loginModal = useLoginModal();
-  //const registerModal = useRegisterModal();
+  const loginModal = useLoginModal();
+  const registerModal = useRegisterModal();
   return (
     <div
       className={`flex items-center ${
@@ -34,17 +37,10 @@ const NavList: React.FC<NavListProps> = ({currentUser, row, closeMobileNavbar}) 
             </>
           ) : (
             <>
-              <Button
-                secondary
-                //onClick={loginModal.onOpen}
-              >
+              <Button secondary onClick={loginModal.onOpen}>
                 Sign in
               </Button>
-              <Button
-              //onClick={registerModal.onOpen}
-              >
-                Sign up
-              </Button>
+              <Button onClick={registerModal.onOpen}>Sign up</Button>
             </>
           )}
           <ThemeMode />
@@ -57,12 +53,12 @@ const NavList: React.FC<NavListProps> = ({currentUser, row, closeMobileNavbar}) 
             <div className="flex flex-col items-center">
               <NavItem
                 name="Sign in"
-                //displayModal={loginModal.onOpen}
+                displayModal={loginModal.onOpen}
                 handleOpen={closeMobileNavbar}
               />
               <NavItem
                 name="Sign up"
-                //displayModal={registerModal.onOpen}
+                displayModal={registerModal.onOpen}
                 handleOpen={closeMobileNavbar}
               />
             </div>

@@ -4,8 +4,9 @@ import Logo from "./Logo";
 import NavList from "./NavList";
 import {RxHamburgerMenu, RxCross1} from "react-icons/rx";
 import {motion} from "framer-motion";
+import {SafeUser} from "@/app/types";
 interface NavbarProps {
-  currentUser?: boolean;
+  currentUser: SafeUser | null;
 }
 
 const Navbar: React.FC<NavbarProps> = ({currentUser}) => {

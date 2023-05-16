@@ -23,7 +23,7 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
       type={type}
       disabled={disabled}
-      className={`flex justify-center rounded-md px-3 py-2.5 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 border border-[2px]
+      className={`flex justify-center rounded-md px-3 py-3 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 border border-[2px]
       ${disabled && "opacity-50 cursor-default"} 
       ${fullWidth && "w-full"}
       ${
@@ -35,7 +35,7 @@ const Button: React.FC<ButtonProps> = ({
       ${
         !secondary &&
         !danger &&
-        "bg-dark hover:bg-dark_shadow focus:outline-dark_shadow dark:bg-light hover:dark:bg-light_shadow focus:dark:outline-light_shadow"
+        "bg-dark_shadow hover:bg-dark focus:outline-dark_shadow dark:bg-light_shadow hover:dark:bg-light focus:dark:outline-light_shadow"
       }
       `}
     >

@@ -7,7 +7,7 @@ const ThemeMode = () => {
     <button
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
       className={`${
-        theme === "dark" ? "bg-light hover:bg-light_shadow" : "bg-dark hover:bg-dark_shadow"
+        theme === "dark" ? "bg-light_shadow hover:bg-light" : "bg-dark_shadow hover:bg-dark"
       } h-10 w-10 rounded-full flex items-center justify-center`}
     >
       {theme === "dark" ? (
