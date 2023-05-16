@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <Container>
       <Navbar />
-      <div className="flex flex-col">
+      <div className="flex flex-col space-y-[500px] pt-20">
         <Hero />
         <Features />
         <Subscription />
