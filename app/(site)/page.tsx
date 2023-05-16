@@ -18,7 +18,7 @@ const Home = async () => {
       <LoginModal />
       <Container>
         <Navbar currentUser={currentUser} />
-        <div className="flex flex-col space-y-[500px] pt-20">
+        <div className="flex flex-col">
           <Hero />
           <Features />
           <Subscription />
