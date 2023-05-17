@@ -1,7 +1,7 @@
 import getSession from "./getSession";
 import prisma from "@/app/libs/prismadb";
 
-export default async function getCurrentUser() {
+export default async function getCurrentCompany() {
   try {
     const session = await getSession();
 
@@ -17,8 +17,17 @@ export default async function getCurrentUser() {
     if (!currentUser) {
       return null;
     }
+
+    const company = await prisma.company.findUnique({
+      where: {
+        id: currentUser.companyId,
+      },
+    });
+    if (!company) {
+      return null;
+    }
     return {
-      ...currentUser,
+      ...company,
       createdAt: currentUser.createdAt.toISOString(),
       updatedAt: currentUser.updatedAt.toISOString(),
     };

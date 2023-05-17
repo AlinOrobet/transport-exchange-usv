@@ -33,7 +33,7 @@ const NavList: React.FC<NavListProps> = ({currentUser, row, closeMobileNavbar}) 
         <div className="flex flex-row items-center space-x-2">
           {currentUser ? (
             <>
-              <Button onClick={() => router.push("/dashboard")}>Dashboard</Button>
+              <Button onClick={() => router.push("/dashboard/home")}>Dashboard</Button>
             </>
           ) : (
             <>

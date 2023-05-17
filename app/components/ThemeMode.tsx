@@ -1,14 +1,19 @@
 import React from "react";
 import {useTheme} from "next-themes";
 import Image from "next/image";
-const ThemeMode = () => {
+interface ThemeModeProps {
+  square?: boolean;
+}
+const ThemeMode: React.FC<ThemeModeProps> = ({square}) => {
   const {theme, setTheme} = useTheme();
   return (
     <button
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
       className={`${
         theme === "dark" ? "bg-light_shadow hover:bg-light" : "bg-dark_shadow hover:bg-dark"
-      } h-10 w-10 rounded-full flex items-center justify-center`}
+      } ${
+        square ? "rounded-md h-12 w-12" : "rounded-full h-10 w-10 "
+      } flex items-center justify-center`}
     >
       {theme === "dark" ? (
         <Image
