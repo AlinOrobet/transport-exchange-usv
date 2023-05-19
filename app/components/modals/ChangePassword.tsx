@@ -8,7 +8,7 @@ import useChangePasswordModal from "@/app/hooks/useChangePasswordModal";
 import {AiFillLock} from "react-icons/ai";
 import axios from "axios";
 import {useRouter} from "next/navigation";
-import TransitionModal from "./TransitionModal";
+import MultiStepModal from "./MultiStepModal";
 
 enum STEPS {
   EMAIL = 0,
@@ -162,7 +162,7 @@ const ChangePasswordModal = () => {
   }
 
   return (
-    <TransitionModal
+    <MultiStepModal
       disabled={isLoading}
       isOpen={changePasswordModal.isOpen}
       title="Account security"

@@ -8,6 +8,8 @@ interface ButtonProps {
   secondary?: boolean;
   danger?: boolean;
   disabled?: boolean;
+  small?: boolean;
+  transparent?: boolean;
 }
 const Button: React.FC<ButtonProps> = ({
   type,
@@ -17,24 +19,30 @@ const Button: React.FC<ButtonProps> = ({
   secondary,
   danger,
   disabled,
+  small,
+  transparent,
 }) => {
   return (
     <button
       onClick={onClick}
       type={type}
       disabled={disabled}
-      className={`flex justify-center rounded-md p-3 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 border border-[2px]
+      className={`flex justify-center rounded-md text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+      ${small ? "p-2" : "p-3"}
       ${disabled && "opacity-50 cursor-default"} 
       ${fullWidth && "w-full"}
       ${
         secondary
           ? "dark:text-light text-dark border-dark dark:border-light bg-light_shadow hover:bg-light dark:bg-dark_shadow hover:dark:bg-dark"
-          : "text-light dark:text-dark dark:border-light border-dark"
+          : "dark:border-light border-dark"
       }
-      ${danger && "bg-rose-500 hover:bg-rose-600 focus-visible:outline-rose-600"}
+      ${transparent ? "bg-transparent" : "border border-[2px]"}
+      ${danger && "bg-rose-500 hover:bg-rose-600 focus-visible:outline-rose-600 border-none"}
+      ${!danger && !secondary && "text-light dark:text-dark"}
       ${
         !secondary &&
         !danger &&
+        !transparent &&
         "bg-dark_shadow hover:bg-dark focus:outline-dark_shadow dark:bg-light_shadow hover:dark:bg-light focus:dark:outline-light_shadow"
       }
       `}

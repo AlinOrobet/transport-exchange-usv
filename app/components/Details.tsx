@@ -10,8 +10,8 @@ interface DetailsProps {
 const Details: React.FC<DetailsProps> = ({label, value, col}) => {
   return (
     <div className={`flex ${col ? "flex-col" : "flex-row justify-between w-full"} items-center`}>
-      <p className="text-xl font-bold">{label}</p>
-      <span className="text-sm font-semibold">{value || "Undefined"}</span>
+      <p className="text-sm font-medium sm:w-40 sm:flex-shrink-0">{label}</p>
+      <span className="">{value || "Undefined"}</span>
     </div>
   );
 };

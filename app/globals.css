@@ -21,3 +21,11 @@ body,
   background: rgba(255, 255, 255, 0.6);
   filter: blur(750px);
 }
+
+.pagination_head {
+  @apply flex items-center justify-center w-10 h-10 text-gray-400 cursor-pointer ring-1 ring-inset ring-gray-400 dark:ring-gray-300 focus:z-20 focus:outline-offset-0 text-dark dark:text-light hover:bg-light hover:dark:bg-dark;
+}
+
+.pagination_body {
+  @apply flex items-center justify-center w-10 h-10 text-sm font-semibold ring-1 ring-inset ring-gray-400 dark:ring-gray-300 focus:z-20 focus:outline-offset-0 text-dark dark:text-light hover:bg-light hover:dark:bg-dark;
+}
