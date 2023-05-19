@@ -20,7 +20,7 @@ const UserCard: React.FC<UserCardProps> = ({user, isOwner, setUserProfile}) => {
   return (
     <div className="relative w-full h-[12rem] px-2 py-3 rounded-md bg-light dark:bg-dark text-dark dark:text-light">
       <div className="flex flex-col items-center space-y-2">
-        <Avatar user={user} />
+        <Avatar url={user ? user.image : null} type="User" userEmail={user ? user.email : null} />
         <div className="font-semibold text-center">
           {user?.lastName || user?.firstName ? (
             <div className="flex flex-row items-center space-x-2">

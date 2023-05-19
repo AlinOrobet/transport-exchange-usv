@@ -1,8 +1,7 @@
 import {usePathname} from "next/navigation";
 import {useMemo} from "react";
-import {AiOutlineTeam} from "react-icons/ai";
+import {AiOutlineTeam, AiOutlineMessage} from "react-icons/ai";
 import {BiSearchAlt} from "react-icons/bi";
-import {HiChat} from "react-icons/hi";
 import {RiFileList2Line, RiDashboardFill} from "react-icons/ri";
 import {FiSettings} from "react-icons/fi";
 
@@ -47,8 +46,8 @@ const useRoutes = ({accountType, notification}: IProps) => {
         id: 4,
         label: "Chat",
         href: "/dashboard/conversations",
-        icon: HiChat,
-        active: pathname === "/dashboard",
+        icon: AiOutlineMessage,
+        active: pathname?.includes("/dashboard/conversations"),
         notification: !notification,
       },
       {

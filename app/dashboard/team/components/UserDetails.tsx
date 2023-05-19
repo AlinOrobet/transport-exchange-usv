@@ -4,8 +4,9 @@ import React, {useMemo} from "react";
 import Avatar from "../../components/Avatar";
 import {format} from "date-fns";
 import {IoTrash} from "react-icons/io5";
+import {User} from "@prisma/client";
 interface UserDetailsProps {
-  user: SafeUser | null;
+  user: SafeUser | User | null;
 }
 
 const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
@@ -31,7 +32,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({user}) => {
     <div className="relative flex-1 px-4 mt-6 sm:px-6 text-dark dark:text-light">
       <div className="flex flex-col items-center">
         <div className="mb-2">
-          <Avatar url={user ? user.image : null} type="User" />
+          <Avatar url={user ? user.image : null} type="User" userEmail={user ? user.email : null} />
         </div>
         <div className="font-bold">{title}</div>
         <div className="font-semibold text-gray-900 dark:text-gray-300">{statusText}</div>

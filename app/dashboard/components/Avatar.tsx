@@ -1,15 +1,22 @@
 "use client";
+import useActiveList from "@/app/hooks/useActiveList";
 import Image from "next/image";
-import React from "react";
+import React, {useMemo} from "react";
 
 interface AvatarProps {
+  userEmail?: string | null;
   url: string | null;
   large?: boolean;
   type: "Company" | "User";
 }
 
-const Avatar: React.FC<AvatarProps> = ({url, large, type}) => {
-  const isActive = true;
+const Avatar: React.FC<AvatarProps> = ({url, large, type, userEmail}) => {
+  const {members} = useActiveList();
+  const isActive = useMemo(() => {
+    if (userEmail) {
+      return members.indexOf(userEmail) !== -1;
+    }
+  }, [userEmail, members]);
   return (
     <div className="relative">
       <div

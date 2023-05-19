@@ -112,4 +112,8 @@ const InviteMemberModal: React.FC<InviteMemberModalProps> = ({isOpen, onClose, c
 };
 
 export default InviteMemberModal;
-const options = [{value: "Owner"}, {value: "Staff"}, {value: "Employee"}];
+const options = [
+  {value: "1", label: "Owner"},
+  {value: "2", label: "Staff"},
+  {value: "3", label: "Employee"},
+];
