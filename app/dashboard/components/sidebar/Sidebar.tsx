@@ -30,7 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({currentUser, currentCompany}) => {
         />
       </div>
       <div
-        className={`absolute top-[2.5rem] lg:top-[3rem] left-[1rem] w-[15rem] h-[calc(100vh-3.5rem)] lg:h-[calc(100vh-4.5rem)] rounded-md shadow-xl bg-light_shadow dark:bg-dark_shadow duration-300 transition ${
+        className={`absolute top-[2.5rem] lg:top-[3rem] left-[1rem] w-[15rem] h-[calc(100vh-3.5rem)] lg:h-[calc(100vh-4.5rem)] rounded-md shadow-xl bg-light_shadow dark:bg-dark_shadow duration-300 transition z-50 ${
           open ? "inline" : "hidden lg:inline"
         }`}
       >

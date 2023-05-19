@@ -7,10 +7,10 @@ import {useRouter} from "next/navigation";
 import {AiFillLock} from "react-icons/ai";
 import Input from "@/app/components/inputs/Input";
 import Heading from "@/app/components/Heading";
-import TransitionModal from "@/app/components/modals/TransitionModal";
 import toast from "react-hot-toast";
 import {signIn} from "next-auth/react";
 import useChangePasswordModal from "@/app/hooks/useChangePasswordModal";
+import MultiStepModal from "@/app/components/modals/MultiStepModal";
 const LoginModal = () => {
   const router = useRouter();
   const loginModal = useLoginModal();
@@ -109,7 +109,7 @@ const LoginModal = () => {
   );
 
   return (
-    <TransitionModal
+    <MultiStepModal
       disabled={isLoading}
       isOpen={loginModal.isOpen}
       title="Login"

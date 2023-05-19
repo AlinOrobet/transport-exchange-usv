@@ -6,11 +6,11 @@ import {FieldValues, SubmitHandler, useForm} from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
 import {AiFillLock} from "react-icons/ai";
-import TransitionModal from "@/app/components/modals/TransitionModal";
 import Heading from "@/app/components/Heading";
 import Input from "@/app/components/inputs/Input";
 import AddressSelect from "@/app/components/inputs/AddressSelect";
 import GoogleMapComp from "@/app/components/GoogleMap";
+import MultiStepModal from "@/app/components/modals/MultiStepModal";
 enum STEPS {
   ACCOUNT = 0,
   VERIFY_EMAIL = 1,
@@ -297,7 +297,7 @@ const RegisterModal = () => {
     );
   }
   return (
-    <TransitionModal
+    <MultiStepModal
       disabled={isLoading}
       isOpen={registerModal.isOpen}
       title="Register"
