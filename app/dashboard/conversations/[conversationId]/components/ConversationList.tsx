@@ -65,7 +65,7 @@ const ConversationList: React.FC<ConversationListProps> = ({initialItems, users}
         return [...current.filter((convo) => convo.id !== conversation.id)];
       });
       if (conversationId === conversation.id) {
-        router.push("/conversations");
+        router.push("/dashboard/conversations");
       }
     };
 

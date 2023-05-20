@@ -12,13 +12,15 @@ import ThemeMode from "@/app/components/ThemeMode";
 interface SidebarProps {
   currentUser: SafeUser | null;
   currentCompany: SafeCompany | null;
+  unseenMessages: boolean;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({currentUser, currentCompany}) => {
+const Sidebar: React.FC<SidebarProps> = ({currentUser, currentCompany, unseenMessages}) => {
   const [open, setOpen] = useState(false);
   const routes = useRoutes({
     accountType: currentCompany?.accountType || undefined,
-    notification: currentUser?.hasDefaultPassword || undefined,
+    notificationSettings: currentUser?.hasDefaultPassword || undefined,
+    notificationChat: unseenMessages,
   });
   return (
     <>

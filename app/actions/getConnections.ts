@@ -8,17 +8,36 @@ const getConnections = async () => {
     return [];
   }
   try {
-    const connections = await prisma.user.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
+    const users = await prisma.user.findMany({
       where: {
+        OR: [
+          {
+            conversations: {
+              some: {
+                users: {
+                  some: {
+                    id: currentUser.id,
+                  },
+                },
+              },
+            },
+          },
+          {
+            companyId: currentUser.companyId,
+          },
+        ],
         NOT: {
           id: currentUser.id,
         },
       },
+      include: {
+        conversations: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
-    return connections;
+    return users;
   } catch (error: any) {
     return [];
   }
