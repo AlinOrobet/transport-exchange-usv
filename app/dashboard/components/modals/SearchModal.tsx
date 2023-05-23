@@ -8,14 +8,19 @@ import {useRouter, useSearchParams} from "next/navigation";
 import React, {useState} from "react";
 import {FieldValues, SubmitHandler, useForm} from "react-hook-form";
 import qs from "query-string";
+type SelectOptions = {
+  label: string;
+  value: string;
+};
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   subtitle: string;
+  options: SelectOptions[];
 }
 
-const SearchModal: React.FC<SearchModalProps> = ({isOpen, onClose, title, subtitle}) => {
+const SearchModal: React.FC<SearchModalProps> = ({isOpen, onClose, title, subtitle, options}) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const params = useSearchParams();
@@ -112,7 +117,16 @@ const SearchModal: React.FC<SearchModalProps> = ({isOpen, onClose, title, subtit
           </div>
         </div>
         <div className="flex items-center justify-end gap-x-3">
-          <Button disabled={isLoading} type="button" transparent onClick={() => reset()}>
+          <Button
+            disabled={isLoading}
+            type="button"
+            transparent
+            onClick={() => {
+              reset();
+              router.push("/dashboard/team");
+              onClose();
+            }}
+          >
             Reset
           </Button>
           <Button disabled={isLoading} type="submit">
@@ -125,8 +139,3 @@ const SearchModal: React.FC<SearchModalProps> = ({isOpen, onClose, title, subtit
 };
 
 export default SearchModal;
-const options = [
-  {value: "Email", label: "E-mail"},
-  {value: "FirstName", label: "First name"},
-  {value: "LastName", label: "Last name"},
-];

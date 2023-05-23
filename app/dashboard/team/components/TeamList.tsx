@@ -4,11 +4,9 @@ import {SafeUser} from "@/app/types";
 import {useRouter, useSearchParams} from "next/navigation";
 import React, {useState} from "react";
 import Pagination from "../../components/Pagination";
-import ProfileDrawer from "../../components/modals/ProfileDrawer";
 import UserCard from "./UserCard";
-import UserDetails from "./UserDetails";
 import InviteMemberModal from "./InviteMemberModal";
-import {AiOutlineDelete, AiOutlineSearch} from "react-icons/ai";
+import {AiOutlineSearch} from "react-icons/ai";
 import SearchModal from "../../components/modals/SearchModal";
 import qs from "query-string";
 
@@ -22,9 +20,6 @@ interface TeamListProps {
 const TeamList: React.FC<TeamListProps> = ({isOwner, users, numberOfUsers, currentCompany}) => {
   const router = useRouter();
   const params = useSearchParams();
-  console.log(params?.get);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [userProfile, setUserProfile] = useState<SafeUser | null>(null);
 
   const [inviteMemberModal, setInviteMemberModal] = useState(false);
   const [searchModal, setSearchModal] = useState(false);
@@ -33,9 +28,6 @@ const TeamList: React.FC<TeamListProps> = ({isOwner, users, numberOfUsers, curre
   const totalPages = Math.ceil(numberOfUsers / (isOwner ? 8 : 9));
   return (
     <>
-      <ProfileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <UserDetails user={userProfile} />
-      </ProfileDrawer>
       <InviteMemberModal
         isOpen={inviteMemberModal}
         onClose={() => setInviteMemberModal(false)}
@@ -46,6 +38,7 @@ const TeamList: React.FC<TeamListProps> = ({isOwner, users, numberOfUsers, curre
         onClose={() => setSearchModal(false)}
         title="Search team mates"
         subtitle="habarnma"
+        options={options}
       />
       <div className="flex flex-col h-full space-y-2">
         <div className="flex flex-row items-center justify-between w-full">
@@ -73,15 +66,7 @@ const TeamList: React.FC<TeamListProps> = ({isOwner, users, numberOfUsers, curre
               </div>
             )}
             {users.map((user) => (
-              <UserCard
-                key={user.id}
-                user={user}
-                isOwner={isOwner}
-                setUserProfile={() => {
-                  setDrawerOpen(true);
-                  setUserProfile(user);
-                }}
-              />
+              <UserCard key={user.id} user={user} isOwner={isOwner} />
             ))}
           </div>
         </div>
@@ -116,3 +101,9 @@ const TeamList: React.FC<TeamListProps> = ({isOwner, users, numberOfUsers, curre
 };
 
 export default TeamList;
+const options = [
+  {value: "Email", label: "E-mail"},
+  {value: "FirstName", label: "First name"},
+  {value: "LastName", label: "Last name"},
+  {value: "Role", label: "Role"},
+];

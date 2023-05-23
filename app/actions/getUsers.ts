@@ -40,6 +40,9 @@ export default async function getUsers(params: IUsersParams) {
   if (!filterBy) {
     order.createdAt = orderByValue;
   } else {
+    if (filterBy.includes("Role")) {
+      order.role = orderByValue;
+    }
     if (filterBy.includes("Email")) {
       order.email = orderByValue;
     }

@@ -61,8 +61,8 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({data, selected}) => {
     if (otherUser?.lastName && otherUser?.firstName) {
       return otherUser.lastName + " " + otherUser?.firstName;
     }
-    return otherUser.email;
-  }, [otherUser.lastName, otherUser.firstName, otherUser.email, data.name]);
+    return otherUser?.email;
+  }, [otherUser?.lastName, otherUser?.firstName, otherUser?.email, data.name]);
   const textRef = useRef<HTMLParagraphElement | null>(null);
   const [isWideText, setIsWideText] = useState(false);
   useEffect(() => {
@@ -83,7 +83,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({data, selected}) => {
       {data.isGroup ? (
         <AvatarGroup users={data.users} />
       ) : (
-        <Avatar userEmail={otherUser.email} url={otherUser.image} type="User" />
+        <Avatar userEmail={otherUser?.email} url={otherUser?.image} type="User" />
       )}
       <div className="flex-1 min-w-0">
         <div className="focus:outline-none">
