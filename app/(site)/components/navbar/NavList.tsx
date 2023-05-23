@@ -48,7 +48,7 @@ const NavList: React.FC<NavListProps> = ({currentUser, row, closeMobileNavbar}) 
       ) : (
         <div className="flex flex-col items-center">
           {currentUser ? (
-            <NavItem name="Dashboard" href="/dashboard" />
+            <NavItem name="Dashboard" href="/dashboard/home" />
           ) : (
             <div className="flex flex-col items-center">
               <NavItem
