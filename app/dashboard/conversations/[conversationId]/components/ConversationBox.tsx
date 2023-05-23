@@ -61,8 +61,8 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({data, selected}) => {
     if (otherUser?.lastName && otherUser?.firstName) {
       return otherUser.lastName + " " + otherUser?.firstName;
     }
-    return otherUser.email;
-  }, [otherUser.lastName, otherUser.firstName, otherUser.email, data.name]);
+    return otherUser?.email;
+  }, [otherUser?.lastName, otherUser?.firstName, otherUser?.email, data.name]);
   const textRef = useRef<HTMLParagraphElement | null>(null);
   const [isWideText, setIsWideText] = useState(false);
   useEffect(() => {
@@ -76,14 +76,14 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({data, selected}) => {
       onClick={handleClick}
       className={`relative flex items-center w-full p-3 space-x-3 rounded-lg cursor-pointer mt-1 transition duration-200 ${
         selected
-          ? "bg-light dark:bg-dark hover:bg-[#BFBFBF] hover:dark:bg-[#19242F]"
-          : "bg-[#BFBFBF] dark:bg-[#19242F] hover:bg-light hover:dark:bg-dark"
+          ? "bg-light_hover hover:bg-light dark:bg-dark hover:dark:bg-dark_hover"
+          : "bg-light hover:bg-light_hover dark:bg-dark_hover hover:dark:bg-dark"
       }`}
     >
       {data.isGroup ? (
         <AvatarGroup users={data.users} />
       ) : (
-        <Avatar userEmail={otherUser.email} url={otherUser.image} type="User" />
+        <Avatar userEmail={otherUser?.email} url={otherUser?.image} type="User" />
       )}
       <div className="flex-1 min-w-0">
         <div className="focus:outline-none">

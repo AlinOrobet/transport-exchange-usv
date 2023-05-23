@@ -35,7 +35,7 @@ const UserBox: React.FC<UserBoxProps> = ({data}) => {
     <>
       <div
         onClick={handleClick}
-        className="relative flex items-center w-full p-3 mt-1 space-x-3 transition rounded-lg cursor-pointer hover:bg-light hover:dark:bg-dark text-dark dark:text-light bg-[#BFBFBF] dark:bg-[#19242F] duration-200"
+        className="relative flex items-center w-full p-3 mt-1 space-x-3 transition duration-200 rounded-lg cursor-pointer bg-light hover:dark:bg-dark text-dark dark:text-light hover:bg-light_hover dark:bg-dark_hover"
       >
         <Avatar url={data.image} type="User" userEmail={data ? data.email : null} />
         <div className="flex-1 min-w-0">

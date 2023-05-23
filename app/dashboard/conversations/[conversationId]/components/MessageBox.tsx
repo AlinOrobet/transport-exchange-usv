@@ -49,8 +49,8 @@ const MessageBox: React.FC<MessageBoxProps> = ({isLast, data}) => {
           </div>
         </div>
         <div
-          className={`text-sm w-fit overflow-hidden ${
-            isOwn ? "bg-light dark:bg-dark text-black dark:text-light" : "bg-red-300"
+          className={`text-sm w-fit overflow-hidden text-black dark:text-light ${
+            isOwn ? "bg-light dark:bg-dark" : "bg-[#BFBFBF] dark:bg-[#19242F]"
           }
            ${data?.image ? "rounded-md p-0" : "rounded-md py-2 px-3"}`}
         >

@@ -6,7 +6,8 @@ export async function POST(request: Request) {
   try {
     const currentUser = await getCurrentUser();
     const body = await request.json();
-    const {userId, isGroup, members, name} = body;
+    let userId = body.userId;
+    const {isGroup, members, name, email} = body;
     if (!currentUser?.id || !currentUser?.email) {
       return NextResponse.error();
     }
@@ -43,6 +44,18 @@ export async function POST(request: Request) {
       });
 
       return NextResponse.json(newConversation);
+    }
+    if (email) {
+      const user = await prisma.user.findUnique({
+        where: {
+          email: email,
+        },
+      });
+      if (!user) {
+        return NextResponse.error();
+      }
+      userId = user.id;
+      console.log(userId);
     }
 
     const existingConversations = await prisma.conversation.findMany({

@@ -52,7 +52,7 @@ const InviteMemberModal: React.FC<InviteMemberModalProps> = ({isOpen, onClose, c
       await axios.post("/api/register", {
         email: data.email,
         password: code,
-        role: data.role.value,
+        role: data.role.label,
         companyId: currentCompany,
         hasDefaultPassword: true,
       });

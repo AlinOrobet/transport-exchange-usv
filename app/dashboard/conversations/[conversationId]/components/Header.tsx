@@ -2,6 +2,7 @@
 import Avatar from "@/app/dashboard/components/Avatar";
 import AvatarGroup from "@/app/dashboard/components/AvatarGroup";
 import ProfileDrawer from "@/app/dashboard/components/modals/ProfileDrawer";
+import UserDetails from "@/app/dashboard/components/UserDetails";
 import useActiveList from "@/app/hooks/useActiveList";
 import useOtherUser from "@/app/hooks/useOtherUser";
 import {Conversation, User} from "@prisma/client";
@@ -9,7 +10,6 @@ import Link from "next/link";
 import React, {useMemo, useState} from "react";
 import {HiChevronLeft} from "react-icons/hi";
 import {HiEllipsisHorizontal} from "react-icons/hi2";
-import UsersDetails from "./UsersDetails";
 interface HeaderProps {
   conversation: Conversation & {
     users: User[];
@@ -35,7 +35,14 @@ const Header: React.FC<HeaderProps> = ({conversation}) => {
   return (
     <>
       <ProfileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <UsersDetails data={conversation} />
+        <UserDetails
+          data={conversation}
+          user={otherUser}
+          type="Conversation"
+          confirmModalTitle="Delete conversation"
+          confrimModalSubtitle="Are you sure you want to delete this conversation? This action cannot be undone."
+          onCloseDrawer={() => setDrawerOpen(false)}
+        />
       </ProfileDrawer>
       <div className="w-full flex border-b-[1px] border-dark dark:border-light justify-between items-center shadow-sm pb-3">
         <div className="flex items-center gap-3">

@@ -7,10 +7,11 @@ import {FiSettings} from "react-icons/fi";
 
 interface IProps {
   accountType: string | undefined;
-  notification: boolean | undefined;
+  notificationChat: boolean | undefined;
+  notificationSettings: boolean | undefined;
 }
 
-const useRoutes = ({accountType, notification}: IProps) => {
+const useRoutes = ({accountType, notificationChat, notificationSettings}: IProps) => {
   const pathname = usePathname();
   const goodsRoutes = useMemo(
     () => [
@@ -48,7 +49,7 @@ const useRoutes = ({accountType, notification}: IProps) => {
         href: "/dashboard/conversations",
         icon: AiOutlineMessage,
         active: pathname?.includes("/dashboard/conversations"),
-        notification: !notification,
+        notification: notificationChat,
       },
       {
         id: 5,
@@ -56,10 +57,10 @@ const useRoutes = ({accountType, notification}: IProps) => {
         href: "/dashboard/settings",
         icon: FiSettings,
         active: pathname === "/dashboard/settings",
-        notification,
+        notification: notificationSettings,
       },
     ],
-    [pathname, notification]
+    [pathname, notificationSettings, notificationChat]
   );
   if (accountType === "goods") {
     return goodsRoutes;

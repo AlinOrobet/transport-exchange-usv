@@ -4,7 +4,9 @@ import getCurrentUser from "./getCurrentUser";
 export interface IUsersParams {
   page?: number;
   companyId?: string;
-  searchValue?: string;
+  orderBy?: string;
+  value?: string;
+  filterBy?: string;
 }
 
 export default async function getUsers(params: IUsersParams) {
@@ -12,31 +14,58 @@ export default async function getUsers(params: IUsersParams) {
   if (!currentUser) {
     throw new Error("Invalid ID");
   }
-  const {page = 1, companyId = "", searchValue = ""} = params;
+  const {page = 1, companyId = "", value = "", orderBy = "", filterBy = ""} = params;
 
-  const perPage = currentUser?.role === "Owner" ? 8 : 9;
-
-  const where: any = searchValue
+  const where: any = value
     ? {
         companyId,
-        OR: [
-          {firstName: {contains: searchValue, mode: "insensitive"}},
-          {lastName: {contains: searchValue, mode: "insensitive"}},
-        ],
+        id: {not: currentUser.id},
+        OR: [],
       }
     : {companyId, id: {not: currentUser.id}};
 
-  const take = parseInt(perPage.toString());
+  const order: any = {};
 
+  if (filterBy.includes("Email") && value) {
+    where.OR.push({email: {contains: value, mode: "insensitive"}});
+  }
+  if (filterBy.includes("FirstName") && value) {
+    where.OR.push({firstName: {contains: value, mode: "insensitive"}});
+  }
+  if (filterBy.includes("LastName") && value) {
+    where.OR.push({lastName: {contains: value, mode: "insensitive"}});
+  }
+
+  const orderByValue = orderBy === "DESC" ? "desc" : "asc";
+  if (!filterBy) {
+    order.createdAt = orderByValue;
+  } else {
+    if (filterBy.includes("Role")) {
+      order.role = orderByValue;
+    }
+    if (filterBy.includes("Email")) {
+      order.email = orderByValue;
+    }
+    if (filterBy.includes("LastName")) {
+      order.lastName = orderByValue;
+    }
+    if (filterBy.includes("FirstName")) {
+      order.firstName = orderByValue;
+    }
+  }
+
+  const perPage = currentUser?.role === "Owner" ? 8 : 9;
+  const take = parseInt(perPage.toString());
   const users = await prisma.user.findMany({
     where,
     skip: (page - 1) * perPage,
     take,
+    orderBy: order,
   });
 
   const filteredUsers = users.filter((user) => user.id !== currentUser.id);
 
-  const safeUsers = filteredUsers.map((user) =>
+  const safeUsers = users.map((user) =>
     Object.assign(user, {
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
