@@ -1,35 +1,21 @@
 import {NextResponse} from "next/server";
 import prisma from "@/app/libs/prismadb";
-import bcrypt from "bcrypt";
+import getCurrentUser from "@/app/actions/getCurrentUser";
 export async function POST(request: Request) {
-  const body = await request.json();
-  const {firstName, lastName, phoneNumber, image, email, password} = body;
-  if (email) {
-    if (!password) {
+  try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
       return NextResponse.error();
     }
-    const hashedPassword = await bcrypt.hash(password, 12);
-    const user = await prisma.user.update({
-      where: {email: email},
-      data: {
-        hashedPassword,
-        hasDefaultPassword: false,
-      } as Record<string, any>,
-    });
-    return NextResponse.json(user);
-  } else {
-    if (!body.id) return NextResponse.error();
-    const user = await prisma.user.update({
+    const body = await request.json();
+    const updateUser = await prisma.user.update({
       where: {
-        id: body.id,
+        id: currentUser.id,
       },
-      data: {
-        firstName,
-        lastName,
-        phoneNumber,
-        image,
-      },
+      data: body,
     });
-    return NextResponse.json(user);
+    return NextResponse.json(updateUser);
+  } catch (error) {
+    return NextResponse.error();
   }
 }

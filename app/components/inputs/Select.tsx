@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import ReactSelect from "react-select";
+import Flag from "react-world-flags";
 
 type SelectOptions = {
   label: string;
@@ -14,6 +15,7 @@ interface SelectProps {
   onChange: (value: SelectOptions) => void;
   options: SelectOptions[];
   disabled?: boolean;
+  flags?: boolean;
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -23,6 +25,7 @@ const Select: React.FC<SelectProps> = ({
   options,
   disabled,
   multi = false,
+  flags,
 }) => {
   return (
     <div className="z-[100]">
@@ -38,6 +41,7 @@ const Select: React.FC<SelectProps> = ({
           menuPortalTarget={document.body}
           formatOptionLabel={(option: any) => (
             <div className="flex flex-row items-center gap-3 font-normal text-dark">
+              {flags && <Flag code={option.value} className="w-5 h-5" />}
               {option.label}
             </div>
           )}

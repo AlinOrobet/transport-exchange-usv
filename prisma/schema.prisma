@@ -36,12 +36,12 @@ model User {
   firstName          String?
   lastName           String?
   phoneNumber        String?
-  active             Boolean  @default(false)
   role               String?
   hasDefaultPassword Boolean?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   company            Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  languages          String[]
 
   conversationIds String[]       @db.ObjectId
   conversations   Conversation[] @relation(fields: [conversationIds], references: [id])
