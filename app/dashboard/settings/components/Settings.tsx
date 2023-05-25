@@ -1,16 +1,18 @@
 "use client";
-import {SafeUser} from "@/app/types";
+import {SafeCompany, SafeUser} from "@/app/types";
 import React, {useState} from "react";
-import Billing from "./Billing";
-import CompanyProfile from "./CompanyProfile";
+import Billing from "./billing/Billing";
 import ListOfOptions from "./ListOfOptions";
 import MyProfile from "./myProfile/MyProfile";
+import CompanyDetails from "../../components/CompanyDetails";
 
 interface SettingsProps {
   currentUser: SafeUser | null;
+  currentCompany: SafeCompany | null;
+  languages: string[];
 }
 
-const Settings: React.FC<SettingsProps> = ({currentUser}) => {
+const Settings: React.FC<SettingsProps> = ({currentUser, currentCompany, languages}) => {
   const [variant, setVariant] = useState<string>("MyProfile");
   return (
     <div className="flex flex-col h-full space-y-2">
@@ -21,7 +23,13 @@ const Settings: React.FC<SettingsProps> = ({currentUser}) => {
       </div>
       <ListOfOptions variant={variant} setVariant={(value) => setVariant(value)} />
       <div className="w-full h-full">
-        {variant === "CompanyProfile" && <CompanyProfile />}
+        {variant === "MyCompany" && (
+          <CompanyDetails
+            currentUser={currentUser}
+            currentCompany={currentCompany}
+            languages={languages}
+          />
+        )}
         {variant === "MyProfile" && <MyProfile currentUser={currentUser} />}
         {variant === "Billing" && <Billing />}
       </div>

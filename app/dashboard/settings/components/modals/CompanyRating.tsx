@@ -1,4 +1,5 @@
 "use client";
+import Details from "@/app/components/Details";
 import React from "react";
 import {BsStarFill, BsStarHalf, BsStar} from "react-icons/bs";
 const CompanyRating = () => {
@@ -18,25 +19,25 @@ const CompanyRating = () => {
     stars.push({icon: BsStar, className: "text-gray-500"});
   }
   return (
-    <>
-      <div className="flex justify-center w-full">
-        <h1 className="text-2xl font-bold">Rating overview</h1>
-      </div>
-      <div className="flex flex-col items-center">
+    <div className="flex flex-col">
+      <h1 className="text-lg font-bold text-dark_shadow">Rating stats</h1>
+      <Details label="Orders placed" value="1234" />
+      <Details label="Orders in progress" value="1234" />
+      <Details label="Orders completed" value="1234" />
+      <div className="flex flex-col items-center pt-2">
+        <h2 className="font-semibold text-dark_shadow">Rating overview</h2>
         <div className="relative flex flex-row items-end space-x-1">
-          <h3 className="text-2xl font-extrabold 2xl:text-4xl">{number}</h3>
+          <h3 className="text-lg font-extrabold md:text-2xl 2xl:text-4xl">{number}</h3>
           <span className="text-lg">/5</span>
         </div>
-        <div className="mt-2">
-          <div className="flex items-center space-x-2">
-            {stars.map((star, index) => {
-              const Icon = star.icon;
-              return <Icon key={index} className={star.className} />;
-            })}
-          </div>
+        <div className="flex items-center space-x-2">
+          {stars.map((star, index) => {
+            const Icon = star.icon;
+            return <Icon key={index} className={star.className} />;
+          })}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

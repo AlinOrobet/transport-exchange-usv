@@ -1,38 +1,45 @@
+"use client";
 import Button from "@/app/components/Button";
+import GoogleMapComp from "@/app/components/GoogleMap";
 import Heading from "@/app/components/Heading";
-import Select from "@/app/components/inputs/Select";
+import AddressSelect from "@/app/components/inputs/AddressSelect";
 import Modal from "@/app/components/modals/Modal";
-import useCountries from "@/app/hooks/useCountries";
-import {SafeUser} from "@/app/types";
+import {SafeCompany} from "@/app/types";
 import axios from "axios";
 import {useRouter} from "next/navigation";
 import React, {useState} from "react";
 import {FieldValues, SubmitHandler, useForm} from "react-hook-form";
 import toast from "react-hot-toast";
 
-interface LanguagesModalProps {
+interface CompanyDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  currentUser: SafeUser | null;
+  currentCompany: SafeCompany | null;
 }
-const LanguagesModal: React.FC<LanguagesModalProps> = ({isOpen, onClose, currentUser}) => {
-  const {getAll, getByValue} = useCountries();
+
+const CompanyDetailsModal: React.FC<CompanyDetailsModalProps> = ({
+  isOpen,
+  onClose,
+  currentCompany,
+}) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const {
-    setValue,
+    register,
     watch,
+    setValue,
     handleSubmit,
     formState: {errors},
   } = useForm<FieldValues>({
     defaultValues: {
-      languages: currentUser?.languages || [],
+      address: currentCompany?.address || null,
+      latitude: currentCompany?.latitude || undefined,
+      longitude: currentCompany?.longitude || undefined,
     },
   });
-  const languages = watch("languages");
-  const transformedLanguages = languages.map((language: any) =>
-    getByValue(language?.value || language)
-  );
+  const address = watch("address");
+  const latitude = watch("latitude");
+  const longitude = watch("longitude");
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {
       shouldDirty: true,
@@ -42,12 +49,8 @@ const LanguagesModal: React.FC<LanguagesModalProps> = ({isOpen, onClose, current
   };
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
-    let languages = [];
-    if (data.languages) {
-      languages = data.languages.map((language: any) => language.value);
-    }
     axios
-      .post("/api/editAccount", {languages: languages})
+      .post("/api/editCompany", data)
       .then(() => {
         router.refresh();
         toast.success("Success");
@@ -59,14 +62,20 @@ const LanguagesModal: React.FC<LanguagesModalProps> = ({isOpen, onClose, current
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <Heading title="Profile" subtitle="Edit your languages" />
-        <Select
-          label="Select languages"
-          value={transformedLanguages}
-          onChange={(value) => setCustomValue("languages", value)}
-          options={getAll()}
-          multi
-          flags
+        <Heading title="Company Details" subtitle="Edit your company details" />
+        <AddressSelect
+          address={address}
+          onSelectAddress={(address, latitude, longitude) => {
+            setCustomValue("address", address);
+            setCustomValue("latitude", latitude);
+            setCustomValue("longitude", longitude);
+          }}
+          id="address"
+        />
+        <GoogleMapComp
+          center={latitude && longitude ? [latitude, longitude] : undefined}
+          zoom={address ? true : false}
+          small
         />
         <div className="flex items-center justify-end gap-x-3">
           <Button disabled={isLoading} type="button" transparent onClick={onClose}>
@@ -81,4 +90,4 @@ const LanguagesModal: React.FC<LanguagesModalProps> = ({isOpen, onClose, current
   );
 };
 
-export default LanguagesModal;
+export default CompanyDetailsModal;

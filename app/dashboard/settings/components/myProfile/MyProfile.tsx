@@ -10,7 +10,7 @@ import ChangePasswordModal from "@/app/components/modals/ChangePassword";
 import useChangePasswordModal from "@/app/hooks/useChangePasswordModal";
 import ConfirmModal from "@/app/dashboard/components/modals/ConfirmModal";
 import {FiAlertTriangle} from "react-icons/fi";
-import ImageModal from "../ImageModal";
+import ImageModal from "../modals/ImageModal";
 import UserDetailsModal from "./UserDetailsModal";
 import LanguagesModal from "./LanguagesModal";
 import axios from "axios";
@@ -65,6 +65,9 @@ const MyProfile: React.FC<MyProfileProps> = ({currentUser}) => {
         isOpen={imageModalOpen}
         onClose={() => setImageModalOpen(false)}
         src={currentUser?.image}
+        type="User"
+        title="Profile"
+        subtitle="Edit your profile image"
       />
       <UserDetailsModal
         isOpen={userDetailsModalOpen}
@@ -128,11 +131,15 @@ const MyProfile: React.FC<MyProfileProps> = ({currentUser}) => {
         </div>
         <div className="flex flex-col pt-2 space-y-1.5">
           <div className="flex items-center justify-between w-full">
-            <p className="font-bold text-dark_shadow dark:text-light_shadow">Change password</p>
+            <p className="text-sm font-bold text-dark_shadow dark:text-light_shadow">
+              Change password
+            </p>
             <Edit label="Edit" onClick={() => changePasswordModal.onOpen()} />
           </div>
           <div className="flex items-center justify-between w-full">
-            <p className="font-bold text-dark_shadow dark:text-light_shadow">Delete account</p>
+            <p className="text-sm font-bold text-dark_shadow dark:text-light_shadow">
+              Delete account
+            </p>
             <Edit label="Delete" onClick={() => setConfirmOpen(true)} />
           </div>
         </div>

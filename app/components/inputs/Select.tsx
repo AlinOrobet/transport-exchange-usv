@@ -12,7 +12,7 @@ interface SelectProps {
   multi?: boolean;
   label: string;
   value?: SelectOptions;
-  onChange: (value: SelectOptions) => void;
+  onChange: (value: any) => void;
   options: SelectOptions[];
   disabled?: boolean;
   flags?: boolean;
@@ -35,7 +35,7 @@ const Select: React.FC<SelectProps> = ({
           isMulti={multi}
           isDisabled={disabled}
           value={value}
-          onChange={(value) => onChange(value as SelectOptions)}
+          onChange={(value) => onChange(value)}
           isClearable
           options={options}
           menuPortalTarget={document.body}

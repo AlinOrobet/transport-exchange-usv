@@ -13,8 +13,11 @@ interface ImageModalProps {
   src?: string | null;
   isOpen?: boolean;
   onClose: () => void;
+  type: "User" | "Company";
+  title: string;
+  subtitle: string;
 }
-const ImageModal: React.FC<ImageModalProps> = ({src, isOpen, onClose}) => {
+const ImageModal: React.FC<ImageModalProps> = ({src, isOpen, onClose, type, title, subtitle}) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const {handleSubmit, setValue, watch, reset} = useForm<FieldValues>({
@@ -25,25 +28,37 @@ const ImageModal: React.FC<ImageModalProps> = ({src, isOpen, onClose}) => {
   const image = watch("image");
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
-    axios
-      .post("/api/editAccount", data)
-      .then(() => {
-        router.refresh();
-        toast.success("Success");
-        onClose();
-      })
-      .catch(() => toast.error("Something went wrong!"))
-      .finally(() => setIsLoading(false));
+    if (type === "User") {
+      axios
+        .post("/api/editAccount", data)
+        .then(() => {
+          router.refresh();
+          toast.success("Success");
+          onClose();
+        })
+        .catch(() => toast.error("Something went wrong!"))
+        .finally(() => setIsLoading(false));
+    } else {
+      axios
+        .post("/api/editCompany", data)
+        .then(() => {
+          router.refresh();
+          toast.success("Success");
+          onClose();
+        })
+        .catch(() => toast.error("Something went wrong!"))
+        .finally(() => setIsLoading(false));
+    }
   };
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-12">
           <div className="">
-            <Heading title="Profile" subtitle="Edit your profile image" />
+            <Heading title={title} subtitle={subtitle} />
             <div className="mt-4">
               <ImageUpload
-                label="Profile image"
+                label="Image"
                 value={image}
                 onChange={(image) => setValue("image", image)}
               />
