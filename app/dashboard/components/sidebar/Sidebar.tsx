@@ -52,6 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({currentUser, currentCompany, unseenMes
                 icon={item.icon}
                 active={item.active}
                 notification={item.notification}
+                onClose={() => setOpen(false)}
               />
             ))}
             {currentUser?.role === "Owner" && (

@@ -24,8 +24,11 @@ export default async function getUsers(params: IUsersParams) {
       }
     : {companyId, id: {not: currentUser.id}};
 
-  const order: any = {};
+  const order: any = [];
 
+  if (filterBy.includes("Role") && value) {
+    where.OR.push({role: {contains: value, mode: "insensitive"}});
+  }
   if (filterBy.includes("Email") && value) {
     where.OR.push({email: {contains: value, mode: "insensitive"}});
   }
@@ -38,19 +41,19 @@ export default async function getUsers(params: IUsersParams) {
 
   const orderByValue = orderBy === "DESC" ? "desc" : "asc";
   if (!filterBy) {
-    order.createdAt = orderByValue;
+    order.push({createdAt: orderByValue});
   } else {
     if (filterBy.includes("Role")) {
-      order.role = orderByValue;
+      order.push({role: orderByValue});
     }
     if (filterBy.includes("Email")) {
-      order.email = orderByValue;
+      order.push({email: orderByValue});
     }
     if (filterBy.includes("LastName")) {
-      order.lastName = orderByValue;
+      order.push({lastName: orderByValue});
     }
     if (filterBy.includes("FirstName")) {
-      order.firstName = orderByValue;
+      order.push({firstName: orderByValue});
     }
   }
 

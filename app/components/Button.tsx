@@ -36,14 +36,17 @@ const Button: React.FC<ButtonProps> = ({
           ? "dark:text-light text-dark border-dark dark:border-light bg-light_shadow hover:bg-light dark:bg-dark_shadow hover:dark:bg-dark"
           : "dark:border-light border-dark"
       }
-      ${transparent ? "bg-transparent" : "border border-[2px]"}
-      ${danger && "bg-rose-500 hover:bg-rose-600 focus-visible:outline-rose-600 border-none"}
-      ${!danger && !secondary && "text-light dark:text-dark"}
+      ${transparent ? "bg-transparent text-dark" : "border border-[2px]"}
+      ${
+        danger &&
+        "bg-rose-500 hover:bg-rose-600 focus-visible:outline-rose-600 border-none text-white"
+      }
+      ${!danger && !secondary && ""}
       ${
         !secondary &&
         !danger &&
         !transparent &&
-        "bg-dark_shadow hover:bg-dark focus:outline-dark_shadow dark:bg-light_shadow hover:dark:bg-light focus:dark:outline-light_shadow"
+        "bg-dark_shadow hover:bg-dark focus:outline-dark_shadow dark:bg-light_shadow hover:dark:bg-light focus:dark:outline-light_shadow text-light dark:text-dark"
       }
       `}
     >
