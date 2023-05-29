@@ -29,3 +29,11 @@ body,
 .pagination_body {
   @apply flex items-center justify-center w-10 h-10 text-sm font-semibold ring-1 ring-inset ring-gray-400 dark:ring-gray-300 focus:z-20 focus:outline-offset-0 text-dark dark:text-light hover:bg-light hover:dark:bg-dark;
 }
+.rdrMonth {
+  width: 100% !important;
+}
+
+.rdrCalendarWrapper {
+  font-size: 16px !important;
+  width: 100% !important;
+}

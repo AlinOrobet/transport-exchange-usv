@@ -3,14 +3,10 @@ import React from "react";
 interface ListOfOptionsProps {
   variant: string;
   setVariant: (variant: string) => void;
+  options: any[];
 }
 
-const ListOfOptions: React.FC<ListOfOptionsProps> = ({variant, setVariant}) => {
-  const options = [
-    {id: 1, label: "My profile", value: "MyProfile"},
-    {id: 3, label: "My company", value: "MyCompany"},
-    {id: 4, label: "Billing", value: "Billing"},
-  ];
+const ListOfOptions: React.FC<ListOfOptionsProps> = ({variant, setVariant, options}) => {
   return (
     <div className="flex flex-row items-center space-x-2">
       {options.map((option) => (

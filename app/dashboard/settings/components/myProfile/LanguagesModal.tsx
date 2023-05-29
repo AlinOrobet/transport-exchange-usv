@@ -42,19 +42,26 @@ const LanguagesModal: React.FC<LanguagesModalProps> = ({isOpen, onClose, current
   };
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
-    let languages = [];
+    let languages: any = [];
     if (data.languages) {
       languages = data.languages.map((language: any) => language.value);
     }
     axios
       .post("/api/editAccount", {languages: languages})
       .then(() => {
+        return axios.post("/api/editCompany", {languages: languages});
+      })
+      .then(() => {
         router.refresh();
         toast.success("Success");
         onClose();
       })
-      .catch(() => toast.error("Something went wrong!"))
-      .finally(() => setIsLoading(false));
+      .catch(() => {
+        toast.error("Something went wrong!");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

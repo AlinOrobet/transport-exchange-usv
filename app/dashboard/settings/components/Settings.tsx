@@ -9,10 +9,9 @@ import CompanyDetails from "../../components/CompanyDetails";
 interface SettingsProps {
   currentUser: SafeUser | null;
   currentCompany: SafeCompany | null;
-  languages: string[];
 }
 
-const Settings: React.FC<SettingsProps> = ({currentUser, currentCompany, languages}) => {
+const Settings: React.FC<SettingsProps> = ({currentUser, currentCompany}) => {
   const [variant, setVariant] = useState<string>("MyProfile");
   return (
     <div className="flex flex-col h-full space-y-2">
@@ -21,14 +20,14 @@ const Settings: React.FC<SettingsProps> = ({currentUser, currentCompany, languag
           Settings
         </div>
       </div>
-      <ListOfOptions variant={variant} setVariant={(value) => setVariant(value)} />
+      <ListOfOptions
+        variant={variant}
+        setVariant={(value) => setVariant(value)}
+        options={options}
+      />
       <div className="w-full h-full">
         {variant === "MyCompany" && (
-          <CompanyDetails
-            currentUser={currentUser}
-            currentCompany={currentCompany}
-            languages={languages}
-          />
+          <CompanyDetails currentUser={currentUser} currentCompany={currentCompany} />
         )}
         {variant === "MyProfile" && <MyProfile currentUser={currentUser} />}
         {variant === "Billing" && <Billing />}
@@ -38,3 +37,8 @@ const Settings: React.FC<SettingsProps> = ({currentUser, currentCompany, languag
 };
 
 export default Settings;
+const options = [
+  {id: 1, label: "My profile", value: "MyProfile"},
+  {id: 2, label: "My company", value: "MyCompany"},
+  {id: 3, label: "Billing", value: "Billing"},
+];

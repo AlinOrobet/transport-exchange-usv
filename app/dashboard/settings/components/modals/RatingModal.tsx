@@ -10,10 +10,9 @@ interface RatingModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentCompany: SafeCompany | null;
-  languages: string[];
 }
 
-const RatingModal: React.FC<RatingModalProps> = ({isOpen, onClose, currentCompany, languages}) => {
+const RatingModal: React.FC<RatingModalProps> = ({isOpen, onClose, currentCompany}) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="flex flex-col gap-4 text-dark">
@@ -23,7 +22,7 @@ const RatingModal: React.FC<RatingModalProps> = ({isOpen, onClose, currentCompan
             <h1 className="font-bold md:text-lg">{currentCompany?.companyName}</h1>
             <p className="text-sm font-medium md:text-medium">{currentCompany?.address}</p>
             <div className="flex items-center space-x-2">
-              {languages.map((language, index) => (
+              {currentCompany?.languages.map((language, index) => (
                 <Flag key={index} code={language} className="w-5 h-5" />
               ))}
             </div>

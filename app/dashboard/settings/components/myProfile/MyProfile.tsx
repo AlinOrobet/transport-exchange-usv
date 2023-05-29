@@ -107,14 +107,16 @@ const MyProfile: React.FC<MyProfileProps> = ({currentUser}) => {
           </p>
           <Edit label="Edit" onClick={() => setUserDetailsModalOpen(true)} />
         </div>
-        <Details
-          data={[
-            {id: 1, label: "First Name", value: currentUser?.firstName || "Undefined"},
-            {id: 2, label: "Last Name", value: currentUser?.lastName || "Undefined"},
-            {id: 3, label: "Email address", value: currentUser?.email},
-            {id: 4, label: "Phone", value: currentUser?.phoneNumber || "Undefined"},
-          ]}
-        />
+        <div className="text-dark dark:text-light">
+          <Details
+            data={[
+              {id: 1, label: "First Name", value: currentUser?.firstName || "Undefined"},
+              {id: 2, label: "Last Name", value: currentUser?.lastName || "Undefined"},
+              {id: 3, label: "Email address", value: currentUser?.email},
+              {id: 4, label: "Phone", value: currentUser?.phoneNumber || "Undefined"},
+            ]}
+          />
+        </div>
         <div className="flex items-center justify-between pt-5">
           <p className="text-lg font-bold text-dark_shadow dark:text-light_shadow">Languages</p>
           <Edit label="Edit" onClick={() => setLanguagesModalOpen(true)} />

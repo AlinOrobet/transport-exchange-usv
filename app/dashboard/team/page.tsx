@@ -1,6 +1,5 @@
 import getCurrentCompany from "@/app/actions/getCurrentCompany";
 import getCurrentUser from "@/app/actions/getCurrentUser";
-import getLanguagesCompany from "@/app/actions/getLanguagesCompany";
 import getUsers, {IUsersParams} from "@/app/actions/getUsers";
 import React from "react";
 import CompanyDetails from "../components/CompanyDetails";
@@ -16,7 +15,6 @@ const Team = async ({searchParams}: TeamProps) => {
     ...searchParams,
     companyId: currentUser?.companyId,
   });
-  const languages = await getLanguagesCompany();
   return (
     <>
       <Section fit="w-full xl:w-3/5">
@@ -28,11 +26,7 @@ const Team = async ({searchParams}: TeamProps) => {
         />
       </Section>
       <Section fit="hidden xl:inline xl:w-2/5">
-        <CompanyDetails
-          currentUser={currentUser}
-          currentCompany={currentCompany}
-          languages={languages}
-        />
+        <CompanyDetails currentUser={currentUser} currentCompany={currentCompany} />
       </Section>
     </>
   );

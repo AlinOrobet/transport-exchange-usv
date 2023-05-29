@@ -12,14 +12,9 @@ import CompanyDetailsModal from "../settings/components/modals/CompanyDetailsMod
 interface CompanyDetailsProps {
   currentCompany: SafeCompany | null;
   currentUser: SafeUser | null;
-  languages: string[];
 }
 
-const CompanyDetails: React.FC<CompanyDetailsProps> = ({
-  currentCompany,
-  languages,
-  currentUser,
-}) => {
+const CompanyDetails: React.FC<CompanyDetailsProps> = ({currentCompany, currentUser}) => {
   const joinedDate = useMemo(() => {
     if (currentCompany?.createdAt) {
       return format(new Date(currentCompany.createdAt), "PP");
@@ -42,7 +37,6 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({
         isOpen={ratingModalOpen}
         onClose={() => setRatingModalOpen(false)}
         currentCompany={currentCompany}
-        languages={languages}
       />
       <CompanyDetailsModal
         isOpen={companyDetailsModalOpen}
@@ -63,7 +57,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({
             {currentCompany?.companyName}
           </h1>
           <div className="flex items-center space-x-2">
-            {languages.map((language, index) => (
+            {currentCompany?.languages.map((language, index) => (
               <Flag key={index} code={language} className="w-5 h-5" />
             ))}
           </div>
