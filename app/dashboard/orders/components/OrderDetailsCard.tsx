@@ -2,6 +2,7 @@
 import {SafeOrder, SafeUser} from "@/app/types";
 import {format} from "date-fns";
 import React, {useMemo, useState} from "react";
+import {BiMap} from "react-icons/bi";
 import Avatar from "../../components/Avatar";
 import ProfileDrawer from "../../components/modals/ProfileDrawer";
 import RatingModal from "../../settings/components/modals/RatingModal";
@@ -11,9 +12,14 @@ import OrderDetails from "./OrderDetails";
 interface OrderDetailsCardProps {
   data: SafeOrder;
   currentUser?: SafeUser | null;
+  setVariantMobile?: (variant: string) => void;
 }
 
-const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({data, currentUser}) => {
+const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({
+  data,
+  currentUser,
+  setVariantMobile,
+}) => {
   const postedDate = useMemo(() => {
     if (data?.createdAt) {
       return `at ${format(new Date(data.createdAt), "PP")}`;
@@ -76,16 +82,25 @@ const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({data, currentUser}) 
             </p>
             <span className="text-xs font-light">{postedDate}</span>
           </div>
-          {isOwn && (
-            <div className="absolute top-0 right-0">
-              <div
-                onClick={() => setDetailsDrawerOpen(true)}
-                className="text-sm font-light underline cursor-pointer hover:opacity-75"
-              >
-                Details
-              </div>
+          <div className="absolute top-0 right-0 flex flex-col items-end space-y-1">
+            <div
+              onClick={() => {
+                if (setVariantMobile) {
+                  setVariantMobile("Map");
+                }
+              }}
+              className="flex flex-row items-center space-x-1 underline cursor-pointer xl:hidden hover:opacity-75"
+            >
+              <BiMap size={15} />
+              <div className="text-sm font-light">Map</div>
             </div>
-          )}
+            <div
+              onClick={() => setDetailsDrawerOpen(true)}
+              className="text-sm font-light underline cursor-pointer hover:opacity-75"
+            >
+              Details
+            </div>
+          </div>
         </div>
         <p className="font-bold dark:text-dark_shadow text-light_shadow">Address informations</p>
         <div className="text-light dark:text-dark">

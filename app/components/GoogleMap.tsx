@@ -3,6 +3,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {GoogleMap, Marker, DirectionsRenderer, Circle} from "@react-google-maps/api";
 import {Libraries, useGoogleMapsScript} from "use-google-maps-script";
 import {vehicles} from "../dashboard/orders/components/modals/CreateOrderModal";
+import MapDetails from "./MapDetails";
 
 interface GoogleMapComProps {
   center: number[] | undefined;
@@ -114,7 +115,7 @@ const Map: React.FC<GoogleMapComProps> = ({
         })
         .reduce((sum, consume) => sum + consume, 0);
       consumption = totalConsume / 3;
-      costKm = `${consumption * fuelCost}$`;
+      costKm = `${(consumption * fuelCost).toFixed(2)}$`;
     }
     if (distance && order?.price) {
       const numericDistance = parseFloat(distance.replace(",", ""));
@@ -125,7 +126,7 @@ const Map: React.FC<GoogleMapComProps> = ({
     return {
       distance: distance || "0.0km",
       time: time || "0m",
-      price: order?.price || "0$",
+      price: order?.price ? `${order.price}$` : "0$",
       profit: profit || "0$",
       costKm: costKm || "0$",
     };
@@ -133,7 +134,7 @@ const Map: React.FC<GoogleMapComProps> = ({
 
   return (
     <div className="flex flex-col justify-between h-full gap-2">
-      <div className={small ? "h-[35vh]" : "h-[90%] rounded-lg"}>
+      <div className={small ? "h-[35vh]" : "h-full rounded-lg"}>
         <GoogleMap
           zoom={zoom ? 16 : 5}
           center={centerMap}
@@ -162,30 +163,7 @@ const Map: React.FC<GoogleMapComProps> = ({
           )}
         </GoogleMap>
       </div>
-      {details && (
-        <div className="flex flex-row items-center justify-between w-full">
-          <div className="flex flex-col pr-5">
-            <label className="font-light text-dark dark:text-light">Distance</label>
-            <p>{orderDetails.distance}</p>
-          </div>
-          <div className="flex flex-col pr-5">
-            <label className="font-light text-dark dark:text-light">Time</label>
-            <p>{orderDetails.time}</p>
-          </div>
-          <div className="flex flex-col pr-5">
-            <label className="font-light text-dark dark:text-light">Cost/100KM</label>
-            <p>{orderDetails.costKm}</p>
-          </div>
-          <div className="flex flex-col pr-5">
-            <label className="font-light text-dark dark:text-light">Price</label>
-            <p>{orderDetails.price}</p>
-          </div>
-          <div className="flex flex-col pr-5">
-            <label className="font-light text-dark dark:text-light">Profit</label>
-            <p>{orderDetails.profit}</p>
-          </div>
-        </div>
-      )}
+      {details && <MapDetails orderDetails={orderDetails} />}
     </div>
   );
 };

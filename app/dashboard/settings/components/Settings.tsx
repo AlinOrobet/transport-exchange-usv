@@ -40,5 +40,5 @@ export default Settings;
 const options = [
   {id: 1, label: "My profile", value: "MyProfile"},
   {id: 2, label: "My company", value: "MyCompany"},
-  {id: 3, label: "Billing", value: "Billing"},
+  //{id: 3, label: "Billing", value: "Billing"},
 ];

@@ -13,8 +13,9 @@ interface OrderCardProps {
   data: SafeOrder;
   currentUser?: SafeUser | null;
   setOrder: (order: SafeOrder) => void;
+  setVariantMobile?: (variant: string) => void;
 }
-const OrderCard: React.FC<OrderCardProps> = ({data, currentUser, setOrder}) => {
+const OrderCard: React.FC<OrderCardProps> = ({data, currentUser, setOrder, setVariantMobile}) => {
   const [open, setOpen] = useState(false);
   const {getByLabel} = useCountries();
   const name = useMemo(() => {
@@ -88,7 +89,11 @@ const OrderCard: React.FC<OrderCardProps> = ({data, currentUser, setOrder}) => {
             open && "max-h-[500px]"
           } h-full`}
         >
-          <OrderDetailsCard data={data} currentUser={currentUser} />
+          <OrderDetailsCard
+            data={data}
+            currentUser={currentUser}
+            setVariantMobile={setVariantMobile}
+          />
         </div>
       </div>
     </div>
