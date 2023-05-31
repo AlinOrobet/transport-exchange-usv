@@ -1,7 +1,7 @@
 "use client";
 import Button from "@/app/components/Button";
 import useCountries from "@/app/hooks/useCountries";
-import {SafeOrder} from "@/app/types";
+import {SafeCompany, SafeOrder, SafeUser} from "@/app/types";
 import axios from "axios";
 import {format} from "date-fns";
 import {useRouter} from "next/navigation";
@@ -14,6 +14,8 @@ import ConfirmModal from "../../components/modals/ConfirmModal";
 import Edit from "../../settings/components/Edit";
 import RatingModal from "../../settings/components/modals/RatingModal";
 import Details from "../../settings/components/myProfile/Details";
+import BetCard from "./BetCard";
+import BetModal from "./modals/BetModal";
 import DetailsInfoModal from "./modals/DetailsInfoModal";
 import GeneralInfoModal from "./modals/GeneralInfoModal";
 
@@ -25,6 +27,9 @@ interface OrderDetailsProps {
   pickUpAddress: string | string[];
   shippingAddress: string | string[];
   isOwn: boolean;
+  currentCompany?: SafeCompany | null;
+  companyUsers: SafeUser[];
+  currentUser?: SafeUser | null;
 }
 
 const OrderDetails: React.FC<OrderDetailsProps> = ({
@@ -35,6 +40,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
   shippingAddress,
   onClose,
   isOwn,
+  currentCompany,
+  companyUsers,
+  currentUser,
 }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -74,6 +82,22 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
       .catch(() => toast.error("Something went wrong!"))
       .finally(() => setIsLoading(false));
   }, [router, data?.id, onClose]);
+
+  const [betModalOpen, setBetModalOpen] = useState(false);
+
+  const handleClick = useCallback(() => {
+    setIsLoading(true);
+    axios
+      .post("/api/conversations", {
+        userId: data.userId,
+      })
+      .then(() => {
+        onClose();
+        router.push(`/dashboard/conversations/${data.userId}`);
+      })
+      .finally(() => setIsLoading(false));
+  }, [data.userId, router, onClose]);
+
   return (
     <>
       <RatingModal
@@ -100,97 +124,181 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
         onClose={() => setDetailsInfoModalOpen(false)}
         currentOrder={data}
       />
-      <div className="flex flex-col w-full h-full px-4 pt-4 dark:text-light text-dark">
-        <div className="flex flex-col items-center w-full">
-          <Avatar url={data?.image || null} type="Company" large />
-          <h1 className="text-xl font-bold text-center text-dark_shadow dark:text-light_shadow">
-            {data?.name}
-          </h1>
-          <p className="font-semibold">
-            Posted by{" "}
-            <span
-              onClick={() => setCompanyDetailsModalOpen(true)}
-              className="underline cursor-pointer"
-            >
-              {postAuth}
-            </span>
-          </p>
-          <span className="text-sm font-medium">{postedDate}</span>
-        </div>
-        <div className="flex flex-row items-center justify-between w-full pt-3">
-          <p className="font-bold text-dark_shadow dark:text-light_shadow">General Informations</p>
-          {isOwn && <Edit label="Edit" onClick={() => setGeneralInfoModalOpen(true)} />}
-        </div>
-        <div className="grid grid-cols-2 gap-2 pt-2">
-          <div className="flex flex-col">
-            <p className="text-sm font-light">Pick up address</p>
-            <div className="flex flex-row items-center space-x-1">
-              <Flag code={pickUpName.startCountryIso} className="w-5 h-5" />
-              <p className="text-sm font-medium">
-                {pickUpName.startCityName} {pickUpName.startCountryIso}
-              </p>
-            </div>
-            <p className="text-sm font-medium">{pickUpAddress}</p>
-          </div>
-          <div className="flex flex-col">
-            <p className="text-sm font-light">Shipping address</p>
-            <div className="flex flex-row items-center space-x-1">
-              <Flag code={shippingName.stopCountryIso} className="w-5 h-5" />
-              <p className="text-sm font-medium">
-                {shippingName.stopCityName} {shippingName.stopCountryIso}
-              </p>
-            </div>
-            <p className="text-sm font-medium">{shippingAddress}</p>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-2 pt-1">
-          <div className="flex flex-col">
-            <p className="text-sm font-light">Pick up period</p>
-            <div className="flex flex-row items-center space-x-1">
-              <p> {format(new Date(data?.pickupTimeStart), "dd/MM")}</p>
-              <span>-</span>
-              <p> {format(new Date(data?.pickupTimeEnd), "dd/MM")}</p>
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <p className="text-sm font-light">Shipping period</p>
-            <div className="flex flex-row items-center space-x-1">
-              <p> {format(new Date(data?.shippingTimeStart), "dd/MM")}</p>
-              <span>-</span>
-              <p> {format(new Date(data?.shippingTimeEnd), "dd/MM")}</p>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-row items-center justify-between w-full pt-3">
-          <p className="font-bold text-dark_shadow dark:text-light_shadow">Order Details</p>
-          {isOwn && <Edit label="Edit" onClick={() => setDetailsInfoModalOpen(true)} />}
-        </div>
-        <Details
-          data={[
-            {id: 1, label: "Height", value: data?.height},
-            {id: 2, label: "Weight", value: data?.weight},
-            {id: 3, label: "Width", value: data?.width},
-          ]}
-          numberOfCols
-        />
+      <BetModal
+        isOpen={betModalOpen}
+        onClose={() => setBetModalOpen(false)}
+        order={data}
+        companyUsers={companyUsers}
+        currentBets={data.bets.filter((bet) => bet.userId === currentUser?.id)}
+      />
+      <div className="flex flex-col w-full h-full px-4 pt-4 pb-2 dark:text-light text-dark">
         <div className="flex flex-col">
-          <p className="text-sm font-light">Description</p>
-          <p className="text-xs font-medium">{data?.description}</p>
+          <div className="flex flex-col items-center w-full">
+            <Avatar url={data?.image || null} type="Company" large />
+            <h1 className="text-xl font-bold text-center text-dark_shadow dark:text-light_shadow">
+              {data?.name}
+            </h1>
+            <p className="font-semibold">
+              Posted by{" "}
+              <span
+                onClick={() => setCompanyDetailsModalOpen(true)}
+                className="underline cursor-pointer"
+              >
+                {postAuth}
+              </span>
+            </p>
+            <span className="text-sm font-medium">{postedDate}</span>
+          </div>
+          <div className="flex flex-row items-center justify-between w-full pt-2">
+            <p className="font-bold text-dark_shadow dark:text-light_shadow">
+              General Informations
+            </p>
+            {isOwn && <Edit label="Edit" onClick={() => setGeneralInfoModalOpen(true)} />}
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="flex flex-col">
+              <p className="text-sm font-light">Pick up address</p>
+              <div className="flex flex-row items-center space-x-1">
+                <Flag code={pickUpName.startCountryIso} className="w-5 h-5" />
+                <p className="text-sm font-medium">
+                  {pickUpName.startCityName} {pickUpName.startCountryIso}
+                </p>
+              </div>
+              <p className="text-sm font-medium">{pickUpAddress}</p>
+            </div>
+            <div className="flex flex-col">
+              <p className="text-sm font-light">Shipping address</p>
+              <div className="flex flex-row items-center space-x-1">
+                <Flag code={shippingName.stopCountryIso} className="w-5 h-5" />
+                <p className="text-sm font-medium">
+                  {shippingName.stopCityName} {shippingName.stopCountryIso}
+                </p>
+              </div>
+              <p className="text-sm font-medium">{shippingAddress}</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="flex flex-col">
+              <p className="text-sm font-light">Pick up period</p>
+              <div className="flex flex-row items-center space-x-1">
+                <p> {format(new Date(data?.pickupTimeStart), "dd/MM")}</p>
+                <span>-</span>
+                <p> {format(new Date(data?.pickupTimeEnd), "dd/MM")}</p>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <p className="text-sm font-light">Shipping period</p>
+              <div className="flex flex-row items-center space-x-1">
+                <p> {format(new Date(data?.shippingTimeStart), "dd/MM")}</p>
+                <span>-</span>
+                <p> {format(new Date(data?.shippingTimeEnd), "dd/MM")}</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-row items-center justify-between w-full pt-2">
+            <p className="font-bold text-dark_shadow dark:text-light_shadow">Order Details</p>
+            {isOwn && <Edit label="Edit" onClick={() => setDetailsInfoModalOpen(true)} />}
+          </div>
+          <Details
+            data={
+              currentCompany?.accountType === "transport"
+                ? [
+                    {id: 1, label: "Height", value: data?.height || 0},
+                    {id: 2, label: "Weight", value: data?.weight || 0},
+                    {id: 3, label: "Width", value: data?.width || 0},
+                    {
+                      id: 4,
+                      label: "Price",
+                      value: data?.price,
+                    },
+                  ]
+                : [
+                    {id: 1, label: "Height", value: data?.height || 0},
+                    {id: 2, label: "Weight", value: data?.weight || 0},
+                    {id: 3, label: "Width", value: data?.width || 0},
+                  ]
+            }
+            numberOfCols={currentCompany?.accountType === "transport" ? false : true}
+          />
+          <div className="flex flex-col">
+            <p className="text-sm font-light">Description</p>
+            <p className="text-xs font-medium">{data?.description}</p>
+          </div>
+          <p className="pt-2 font-bold text-dark_shadow dark:text-light_shadow">
+            {!data.isWon && "Bidding people"}
+          </p>
         </div>
-        {isOwn && (
-          <>
-            <p className="pt-3 font-bold text-dark_shadow dark:text-light_shadow">Bidding people</p>
-            <div className="w-full h-full overflow-y-auto bg-red-300"></div>
-            <div className="flex flex-row items-center w-full gap-3 pt-3">
+        <div className="flex-1 overflow-y-auto">
+          {data?.bets.length === 0 && !data.isWon ? (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-lg font-semibold text-center text-dark dark:text-light">
+                Oh, it seems like no one has placed a bet for this order yet
+              </p>
+            </div>
+          ) : (
+            <>
+              {data.isWon && currentUser?.id !== data.userId ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-lg font-semibold text-center text-dark dark:text-light">
+                    {currentUser?.id !== data.winningUserId ? (
+                      "The bidding for this order has concluded. Thank you to all participants for your bids and interest!"
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <p>
+                          Congratulations! You have won this auction! We are excited to inform you
+                          that your bid has been selected as the winning one.
+                        </p>
+                        <p
+                          onClick={handleClick}
+                          className="pt-2 text-sm underline cursor-pointer hover:opacity-75"
+                        >
+                          Send message
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="">
+                    {data?.bets.map((bet) => (
+                      <BetCard
+                        key={bet.id}
+                        bet={bet}
+                        user={bet.user}
+                        currentUser={currentUser}
+                        isOwnOrder={isOwn}
+                        driver={bet.beneficiary}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </div>
+        <div className="flex flex-row items-center w-full gap-3 pt-3">
+          {isOwn && (
+            <>
               <button onClick={onClose} type="button" className="w-full text-dark dark:text-light">
                 Cancel
               </button>
               <Button type="button" danger fullWidth onClick={() => setConfirmModalOpen(true)}>
                 Delete
               </Button>
-            </div>
-          </>
-        )}
+            </>
+          )}
+          {currentCompany?.accountType === "transport" && !data?.isWon && (
+            <>
+              <button onClick={onClose} type="button" className="w-full text-dark dark:text-light">
+                Cancel
+              </button>
+              <Button type="button" fullWidth onClick={() => setBetModalOpen(true)}>
+                Bet
+              </Button>
+            </>
+          )}
+        </div>
       </div>
     </>
   );

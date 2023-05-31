@@ -1,7 +1,7 @@
 "use client";
 import React, {useMemo, useState} from "react";
 import {IoIosArrowDown} from "react-icons/io";
-import {SafeOrder, SafeUser} from "@/app/types";
+import {SafeCompany, SafeOrder, SafeUser} from "@/app/types";
 import {AiFillStar, AiOutlineStar} from "react-icons/ai";
 import useFavorite from "@/app/hooks/useFavorite";
 import OrderDetailsCard from "./OrderDetailsCard";
@@ -12,10 +12,19 @@ import {format} from "date-fns";
 interface OrderCardProps {
   data: SafeOrder;
   currentUser?: SafeUser | null;
+  currentCompany?: SafeCompany | null;
   setOrder: (order: SafeOrder) => void;
   setVariantMobile?: (variant: string) => void;
+  companyUsers: SafeUser[];
 }
-const OrderCard: React.FC<OrderCardProps> = ({data, currentUser, setOrder, setVariantMobile}) => {
+const OrderCard: React.FC<OrderCardProps> = ({
+  data,
+  currentUser,
+  currentCompany,
+  setOrder,
+  setVariantMobile,
+  companyUsers,
+}) => {
   const [open, setOpen] = useState(false);
   const {getByLabel} = useCountries();
   const name = useMemo(() => {
@@ -93,6 +102,8 @@ const OrderCard: React.FC<OrderCardProps> = ({data, currentUser, setOrder, setVa
             data={data}
             currentUser={currentUser}
             setVariantMobile={setVariantMobile}
+            currentCompany={currentCompany}
+            companyUsers={companyUsers}
           />
         </div>
       </div>

@@ -1,4 +1,4 @@
-import {Company, User, Conversation, Message, Order} from "@prisma/client";
+import {Company, User, Conversation, Message, Order, Bet} from "@prisma/client";
 
 export type SafeUser = Omit<User, "createdAt" | "updatedAt"> & {
   createdAt: string;
@@ -11,6 +11,10 @@ export type SafeCompany = Omit<Company, "createdAt" | "updatedAt"> & {
 export type FullMessageType = Message & {
   sender: User;
   seen: User[];
+};
+
+export type SafeBet = Omit<Bet, "createdAt"> & {
+  createdAt: string;
 };
 
 export type FullConversationType = Conversation & {
@@ -27,9 +31,18 @@ export type SafeOrder = Omit<
   | "shippingTimeStart"
   | "shippingTimeEnd"
 > & {
-  user: Omit<User, "createdAt" | "updatedAt"> & {
-    createdAt: string;
-    updatedAt: string;
+  user: SafeUser & {
+    company: SafeCompany;
+  };
+  bets: (SafeBet & {
+    user: SafeUser & {
+      company: SafeCompany;
+    };
+    beneficiary: SafeUser & {
+      company: SafeCompany;
+    };
+  })[];
+  winningUser: SafeUser & {
     company: SafeCompany;
   };
   createdAt: string;

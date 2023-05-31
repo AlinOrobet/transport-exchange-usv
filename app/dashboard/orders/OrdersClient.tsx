@@ -1,16 +1,7 @@
 "use client";
-import {useRouter, useSearchParams} from "next/navigation";
 import React, {useEffect, useState} from "react";
-import Pagination from "../components/Pagination";
 import Section from "../components/Section";
-import qs from "query-string";
-import {AiOutlineSearch} from "react-icons/ai";
-import ListOfOptions from "../settings/components/ListOfOptions";
-import CreateOrderModal from "./components/modals/CreateOrderModal";
-import {SafeOrder, SafeUser} from "@/app/types";
-import SearchOrderModal from "./components/modals/SearchOrderModal";
-import OrderCard from "./components/OrderCard";
-import EmptyState from "../conversations/components/EmptyState";
+import {SafeCompany, SafeOrder, SafeUser} from "@/app/types";
 import GoogleMapComp from "@/app/components/GoogleMap";
 import ListOfOrders from "./components/ListOfOrders";
 import {BiArrowBack} from "react-icons/bi";
@@ -19,16 +10,22 @@ interface OrdersClientProps {
   orders: SafeOrder[];
   ordersCount: number;
   currentUser: SafeUser | null;
+  currentCompany: SafeCompany | null;
   totalOrdersCount: number;
+  companyUsers: SafeUser[];
 }
 
 const OrdersClient: React.FC<OrdersClientProps> = ({
   orders,
   ordersCount,
   currentUser,
+  currentCompany,
   totalOrdersCount,
+  companyUsers,
 }) => {
-  const [variant, setVariant] = useState<string>("MyOrders");
+  const [variant, setVariant] = useState<string>(
+    currentCompany?.accountType === "goods" ? "MyOrders" : "AllOrders"
+  );
   const [variantMobile, setVariantMobile] = useState<string>("Orders");
   useEffect(() => {
     const handleResize = () => {
@@ -52,10 +49,12 @@ const OrdersClient: React.FC<OrdersClientProps> = ({
           orders={orders}
           ordersCount={ordersCount}
           currentUser={currentUser}
+          currentCompany={currentCompany}
           totalOrdersCount={totalOrdersCount}
           variant={variant}
           setVariant={(variant: string) => setVariant(variant)}
           setOrder={(order: SafeOrder) => setOrder(order)}
+          companyUsers={companyUsers}
         />
       </Section>
       <Section fit="h-full w-full xl:w-3/5 flex flex-col">
@@ -77,11 +76,13 @@ const OrdersClient: React.FC<OrdersClientProps> = ({
             orders={orders}
             ordersCount={ordersCount}
             currentUser={currentUser}
+            currentCompany={currentCompany}
             totalOrdersCount={totalOrdersCount}
             variant={variant}
             setVariant={(variant: string) => setVariant(variant)}
             setOrder={(order: SafeOrder) => setOrder(order)}
             setVariantMobile={(variant: string) => setVariantMobile(variant)}
+            companyUsers={companyUsers}
           />
         )}
         {variantMobile === "Map" && (
@@ -104,6 +105,7 @@ const OrdersClient: React.FC<OrdersClientProps> = ({
             }
             details
             order={{price: order?.price || undefined, truck: order?.truckCategory || undefined}}
+            currentCompany={currentCompany}
           />
         )}
       </Section>

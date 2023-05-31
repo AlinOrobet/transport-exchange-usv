@@ -1,5 +1,5 @@
 "use client";
-import {SafeOrder, SafeUser} from "@/app/types";
+import {SafeCompany, SafeOrder, SafeUser} from "@/app/types";
 import {format} from "date-fns";
 import React, {useMemo, useState} from "react";
 import {BiMap} from "react-icons/bi";
@@ -12,13 +12,17 @@ import OrderDetails from "./OrderDetails";
 interface OrderDetailsCardProps {
   data: SafeOrder;
   currentUser?: SafeUser | null;
+  currentCompany?: SafeCompany | null;
   setVariantMobile?: (variant: string) => void;
+  companyUsers: SafeUser[];
 }
 
 const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({
   data,
   currentUser,
+  currentCompany,
   setVariantMobile,
+  companyUsers,
 }) => {
   const postedDate = useMemo(() => {
     if (data?.createdAt) {
@@ -59,6 +63,9 @@ const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({
           pickUpAddress={pickUpAddress}
           shippingAddress={shippingAddress}
           isOwn={isOwn}
+          currentCompany={currentCompany}
+          companyUsers={companyUsers}
+          currentUser={currentUser}
         />
       </ProfileDrawer>
       <RatingModal
@@ -100,6 +107,14 @@ const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({
             >
               Details
             </div>
+            {currentCompany?.accountType === "transport" && !data.isWon && (
+              <div
+                onClick={() => setDetailsDrawerOpen(true)}
+                className="text-sm font-light underline cursor-pointer hover:opacity-75"
+              >
+                Bet
+              </div>
+            )}
           </div>
         </div>
         <p className="font-bold dark:text-dark_shadow text-light_shadow">Address informations</p>

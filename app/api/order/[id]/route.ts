@@ -24,6 +24,7 @@ export async function POST(request: Request, {params}: {params: IParams}) {
         bodyValues[key] = conversionMap[key](body[key]);
       }
     }
+    console.log(bodyValues);
     const order = await prisma.order.update({
       where: {
         id,

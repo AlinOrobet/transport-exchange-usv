@@ -1,8 +1,8 @@
 "use client";
-import {SafeOrder, SafeUser} from "@/app/types";
+import {SafeCompany, SafeOrder, SafeUser} from "@/app/types";
 import {useRouter, useSearchParams} from "next/navigation";
 import qs from "query-string";
-import React, {useState} from "react";
+import React, {useState, useMemo} from "react";
 import {AiOutlineSearch} from "react-icons/ai";
 import Pagination from "../../components/Pagination";
 import EmptyState from "../../conversations/components/EmptyState";
@@ -15,22 +15,26 @@ interface ListOfOrdersProps {
   orders: SafeOrder[];
   ordersCount: number;
   currentUser: SafeUser | null;
+  currentCompany: SafeCompany | null;
   totalOrdersCount: number;
   variant: string;
   setVariant: (variant: string) => void;
   setOrder: (order: SafeOrder) => void;
   setVariantMobile?: (variant: string) => void;
+  companyUsers: SafeUser[];
 }
 
 const ListOfOrders: React.FC<ListOfOrdersProps> = ({
   orders,
   ordersCount,
   currentUser,
+  currentCompany,
   totalOrdersCount,
   variant,
   setVariant,
   setOrder,
   setVariantMobile,
+  companyUsers,
 }) => {
   const router = useRouter();
   const params = useSearchParams();
@@ -38,6 +42,12 @@ const ListOfOrders: React.FC<ListOfOrdersProps> = ({
   const [createOrderModalOpen, setCreateOrderModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(ordersCount / 10);
+  const companyType = useMemo(() => {
+    if (currentCompany) {
+      return currentCompany.accountType;
+    }
+    return null;
+  }, [currentCompany]);
   return (
     <>
       <CreateOrderModal
@@ -72,12 +82,14 @@ const ListOfOrders: React.FC<ListOfOrdersProps> = ({
               <AiOutlineSearch className="cursor-pointer dark:text-dark text-light" size={18} />
             </div>
           </div>
-          <p
-            onClick={() => setCreateOrderModalOpen(true)}
-            className="text-sm font-medium underline cursor-pointer hover:opacity-75 w-fit"
-          >
-            Create new order
-          </p>
+          {companyType === "goods" && (
+            <p
+              onClick={() => setCreateOrderModalOpen(true)}
+              className="text-sm font-medium underline cursor-pointer hover:opacity-75 w-fit"
+            >
+              Create new order
+            </p>
+          )}
         </div>
         <ListOfOptions
           variant={variant}
@@ -99,11 +111,18 @@ const ListOfOrders: React.FC<ListOfOrdersProps> = ({
             );
             router.push(url);
           }}
-          options={[
-            {id: 1, label: "My orders", value: "MyOrders"},
-            {id: 2, label: "Company orders", value: "CompanyOrders"},
-            {id: 3, label: "Favorites", value: "Favorites"},
-          ]}
+          options={
+            companyType === "goods"
+              ? [
+                  {id: 1, label: "My orders", value: "MyOrders"},
+                  {id: 2, label: "Company orders", value: "CompanyOrders"},
+                  {id: 3, label: "Favorites", value: "Favorites"},
+                ]
+              : [
+                  {id: 1, label: "All Orders", value: "AllOrders"},
+                  {id: 2, label: "Favorties", value: "Favorites"},
+                ]
+          }
         />
         <div className="flex-1 h-full pt-2 space-y-2 overflow-y-auto">
           {ordersCount === 0 ? (
@@ -117,6 +136,8 @@ const ListOfOrders: React.FC<ListOfOrdersProps> = ({
                   currentUser={currentUser}
                   setOrder={(order: SafeOrder) => setOrder(order)}
                   setVariantMobile={setVariantMobile}
+                  currentCompany={currentCompany}
+                  companyUsers={companyUsers}
                 />
               ))}
             </div>

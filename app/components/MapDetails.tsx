@@ -9,6 +9,7 @@ interface MapDetailsProps {
     profit: string;
     costKm: string;
   };
+  companyType: string;
 }
 
 interface DetailsProps {
@@ -25,7 +26,7 @@ const Details: React.FC<DetailsProps> = ({label, value}) => {
   );
 };
 
-const MapDetails: React.FC<MapDetailsProps> = ({orderDetails}) => {
+const MapDetails: React.FC<MapDetailsProps> = ({orderDetails, companyType}) => {
   return (
     <div className="grid grid-cols-3 grid-rows-2 gap-x-3 sm:flex sm:flex-row sm:items-center sm:justify-between sm:w-full sm:space-x-2 md:space-x-5">
       <Details label="Distance" value={orderDetails.distance} />
@@ -34,14 +35,20 @@ const MapDetails: React.FC<MapDetailsProps> = ({orderDetails}) => {
         <Details label="Cost/100KM" value={orderDetails.costKm} />
       </div>
       <div className="sm:hidden">
-        <Details label="Profit" value={orderDetails.profit} />
+        <Details
+          label={companyType === "goods" ? "Real price" : "Profit"}
+          value={orderDetails.profit}
+        />
       </div>
       <div className="inline sm:hidden">
         <Details label="Cost/100KM" value={orderDetails.costKm} />
       </div>
       <Details label="Price" value={orderDetails.price} />
       <div className="hidden sm:inline">
-        <Details label="Profit" value={orderDetails.profit} />
+        <Details
+          label={companyType === "goods" ? "Real price" : "Profit"}
+          value={orderDetails.profit}
+        />
       </div>
     </div>
   );

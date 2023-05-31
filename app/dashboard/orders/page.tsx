@@ -1,3 +1,5 @@
+import getCompanyUsers from "@/app/actions/getCompanyUsers";
+import getCurrentCompany from "@/app/actions/getCurrentCompany";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import getOrders, {IOrdersParams} from "@/app/actions/getOrders";
 import React from "react";
@@ -8,8 +10,10 @@ interface OrdersProps {
 }
 
 const OrdersPage = async ({searchParams}: OrdersProps) => {
-  const {orders, count, totalCount} = await getOrders({...searchParams});
   const currentUser = await getCurrentUser();
+  const currentCompany = await getCurrentCompany();
+  const {orders, count, totalCount} = await getOrders({...searchParams});
+  const companyUsers = await getCompanyUsers();
   return (
     <>
       <OrdersClient
@@ -17,6 +21,8 @@ const OrdersPage = async ({searchParams}: OrdersProps) => {
         ordersCount={count}
         totalOrdersCount={totalCount}
         currentUser={currentUser}
+        currentCompany={currentCompany}
+        companyUsers={companyUsers}
       />
     </>
   );

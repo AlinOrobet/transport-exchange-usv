@@ -1,4 +1,5 @@
 import prisma from "@/app/libs/prismadb";
+import getCurrentCompany from "./getCurrentCompany";
 import getCurrentUser from "./getCurrentUser";
 
 export interface IOrdersParams {
@@ -36,10 +37,14 @@ export default async function getOrders(params: IOrdersParams) {
   if (!currentUser) {
     throw new Error("Invalid ID");
   }
+  const currentCompany = await getCurrentCompany();
+  if (!currentCompany) {
+    throw new Error("Invalid ID");
+  }
 
   const {
     page = 1,
-    variant = "MyOrders",
+    variant = currentCompany.accountType === "goods" ? "MyOrders" : "AllOrders",
     truckCategory,
     address,
     addressLat,
@@ -51,7 +56,7 @@ export default async function getOrders(params: IOrdersParams) {
 
   const where: any = {};
 
-  if (variant === "MyOrders" || !variant) {
+  if (variant === "MyOrders") {
     where.userId = currentUser.id;
   } else if (variant === "CompanyOrders") {
     where.user = {company: {id: currentUser.companyId}};
@@ -100,6 +105,20 @@ export default async function getOrders(params: IOrdersParams) {
           company: true,
         },
       },
+      bets: {
+        include: {
+          user: {
+            include: {
+              company: true,
+            },
+          },
+          beneficiary: {
+            include: {
+              company: true,
+            },
+          },
+        },
+      },
     },
   });
 
@@ -115,6 +134,30 @@ export default async function getOrders(params: IOrdersParams) {
         updatedAt: order.user.company.updatedAt.toISOString(),
       },
     },
+    bets: order.bets.map((bet) => ({
+      ...bet,
+      createdAt: bet.createdAt.toISOString(),
+      user: {
+        ...bet.user,
+        createdAt: bet.user.company.createdAt.toISOString(),
+        updatedAt: bet.user.company.updatedAt.toISOString(),
+        company: {
+          ...bet.user.company,
+          createdAt: bet.user.company.createdAt.toISOString(),
+          updatedAt: bet.user.company.updatedAt.toISOString(),
+        },
+      },
+      beneficiary: {
+        ...bet.beneficiary,
+        createdAt: bet.beneficiary.company.createdAt.toISOString(),
+        updatedAt: bet.beneficiary.company.updatedAt.toISOString(),
+        company: {
+          ...bet.beneficiary.company,
+          createdAt: bet.beneficiary.company.createdAt.toISOString(),
+          updatedAt: bet.beneficiary.company.updatedAt.toISOString(),
+        },
+      },
+    })),
     createdAt: order.createdAt.toISOString(),
     updatedAt: order.updatedAt.toISOString(),
     pickupTimeStart: order.pickupTimeStart.toISOString(),

@@ -15,7 +15,9 @@ const EmptyState: React.FC<EmptyStateProps> = ({variant, searchNotFound}) => {
     if (searchNotFound && variant) {
       return "Oh no! It seems we couldn't find any results. Keep exploring, you never know what you might find!";
     }
-    if (variant === "Favorites") {
+    if (variant === "AllOrders") {
+      return "Oh, looks like any company hasn't placed any orders yet.";
+    } else if (variant === "Favorites") {
       return "Hmm, it seems like you haven't chosen any favorites just yet.";
     } else if (variant === "CompanyOrders") {
       return "Oh, looks like your company hasn't placed any orders yet.";

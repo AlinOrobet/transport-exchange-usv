@@ -4,6 +4,7 @@ import {GoogleMap, Marker, DirectionsRenderer, Circle} from "@react-google-maps/
 import {Libraries, useGoogleMapsScript} from "use-google-maps-script";
 import {vehicles} from "../dashboard/orders/components/modals/CreateOrderModal";
 import MapDetails from "./MapDetails";
+import {SafeCompany} from "../types";
 
 interface GoogleMapComProps {
   center: number[] | undefined;
@@ -14,6 +15,7 @@ interface GoogleMapComProps {
   range?: number;
   details?: boolean;
   order?: {price: number | undefined; truck: string[] | undefined};
+  currentCompany?: SafeCompany | null;
 }
 
 type LatLngLiteral = google.maps.LatLngLiteral;
@@ -31,6 +33,7 @@ const GoogleMapComp: React.FC<GoogleMapComProps> = ({
   range,
   details,
   order,
+  currentCompany,
 }) => {
   const {isLoaded, loadError} = useGoogleMapsScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
@@ -48,6 +51,7 @@ const GoogleMapComp: React.FC<GoogleMapComProps> = ({
       range={range}
       details={details}
       order={order}
+      currentCompany={currentCompany}
     />
   );
 };
@@ -61,6 +65,7 @@ const Map: React.FC<GoogleMapComProps> = ({
   range,
   details,
   order,
+  currentCompany,
 }) => {
   const mapRef = useRef<GoogleMap>();
   const onLoad = useCallback((map: any) => (mapRef.current = map), []);
@@ -100,6 +105,13 @@ const Map: React.FC<GoogleMapComProps> = ({
     fetchDirections(startAddress, endAddress);
   }, [startAddress, endAddress]);
 
+  const companyType = useMemo(() => {
+    if (currentCompany) {
+      return currentCompany.accountType;
+    }
+    return "";
+  }, [currentCompany]);
+
   const orderDetails = useMemo(() => {
     const distance = directions?.routes[0].legs[0].distance?.text;
     const time = directions?.routes[0].legs[0].duration?.text;
@@ -121,7 +133,11 @@ const Map: React.FC<GoogleMapComProps> = ({
       const numericDistance = parseFloat(distance.replace(",", ""));
       const fuelNeeded = (consumption * numericDistance) / 100;
       const totalFuelCost = fuelNeeded * fuelCost;
-      profit = `${(order.price - totalFuelCost).toFixed(2)}$`;
+      if (companyType === "goods") {
+        profit = `${(order.price - totalFuelCost).toFixed(2)}$`;
+      } else {
+        profit = `${totalFuelCost.toFixed(2)}$`;
+      }
     }
     return {
       distance: distance || "0.0km",
@@ -130,7 +146,7 @@ const Map: React.FC<GoogleMapComProps> = ({
       profit: profit || "0$",
       costKm: costKm || "0$",
     };
-  }, [directions?.routes, order]);
+  }, [directions?.routes, order, companyType]);
 
   return (
     <div className="flex flex-col justify-between h-full gap-2">
@@ -163,7 +179,7 @@ const Map: React.FC<GoogleMapComProps> = ({
           )}
         </GoogleMap>
       </div>
-      {details && <MapDetails orderDetails={orderDetails} />}
+      {details && <MapDetails orderDetails={orderDetails} companyType={companyType} />}
     </div>
   );
 };
