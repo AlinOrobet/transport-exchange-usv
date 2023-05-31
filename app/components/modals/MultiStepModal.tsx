@@ -49,7 +49,7 @@ const MultiStepModal: React.FC<MultiStepModalProps> = ({
         <div className="text-lg font-bold text-dark">{title}</div>
       </div>
       {/* BODY */}
-      <div className="relative flex-auto p-6">{body}</div>
+      <div className="relative flex-auto p-2 md:p-6">{body}</div>
       {/* FOOTER */}
       <div className="flex flex-col gap-2 p-6">
         <div className="flex flex-row items-center w-full gap-4">

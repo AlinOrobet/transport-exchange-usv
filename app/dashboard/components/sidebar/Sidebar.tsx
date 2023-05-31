@@ -18,7 +18,6 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({currentUser, currentCompany, unseenMessages}) => {
   const [open, setOpen] = useState(false);
   const routes = useRoutes({
-    accountType: currentCompany?.accountType || undefined,
     notificationSettings: currentUser?.hasDefaultPassword || undefined,
     notificationChat: unseenMessages,
   });
@@ -52,6 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({currentUser, currentCompany, unseenMes
                 icon={item.icon}
                 active={item.active}
                 notification={item.notification}
+                onClose={() => setOpen(false)}
               />
             ))}
             {currentUser?.role === "Owner" && (

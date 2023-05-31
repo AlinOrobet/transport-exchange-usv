@@ -38,22 +38,20 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({children, onClose, isOpen}
                 leaveTo="translate-x-full"
               >
                 <Dialog.Panel className="w-screen max-w-md pointer-events-auto">
-                  <div className="flex flex-col h-full py-6 overflow-y-scroll shadow-xl bg-light_shadow dark:bg-dark_shadow">
-                    <div className="px-4 sm:px-6">
-                      <div className="flex items-start justify-end">
-                        <div className="flex items-center ml-3 h-7">
-                          <button
-                            onClick={onClose}
-                            type="button"
-                            className="text-gray-400 rounded-md bg-light_shadow dark:bg-dark_shadow text-dark_shadow dark:text-light_shadow hover:text-dark hover:dark:text-light focus:outline-none focus:ring-2 focus:dark:ring-1 focus:ring-dark focus:dark:ring-light focus:ring-offset-2"
-                          >
-                            <span className="sr-only">Close panel</span>
-                            <IoClose size={24} />
-                          </button>
-                        </div>
+                  <div className="relative flex flex-col h-full shadow-xl bg-light_shadow dark:bg-dark_shadow">
+                    <div className="absolute top-5 right-5">
+                      <div className="flex items-center ml-3 h-7">
+                        <button
+                          onClick={onClose}
+                          type="button"
+                          className="text-gray-400 rounded-md bg-light_shadow dark:bg-dark_shadow text-dark_shadow dark:text-light_shadow hover:text-dark hover:dark:text-light focus:outline-none focus:ring-2 focus:dark:ring-1 focus:ring-dark focus:dark:ring-light focus:ring-offset-2"
+                        >
+                          <span className="sr-only">Close panel</span>
+                          <IoClose size={24} />
+                        </button>
                       </div>
                     </div>
-                    {children}
+                    <div className="h-full pt-3">{children}</div>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

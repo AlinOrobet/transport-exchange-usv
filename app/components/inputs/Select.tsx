@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import ReactSelect from "react-select";
+import Flag from "react-world-flags";
 
 type SelectOptions = {
   label: string;
@@ -11,9 +12,10 @@ interface SelectProps {
   multi?: boolean;
   label: string;
   value?: SelectOptions;
-  onChange: (value: SelectOptions) => void;
+  onChange: (value: any) => void;
   options: SelectOptions[];
   disabled?: boolean;
+  flags?: boolean;
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -23,6 +25,7 @@ const Select: React.FC<SelectProps> = ({
   options,
   disabled,
   multi = false,
+  flags,
 }) => {
   return (
     <div className="z-[100]">
@@ -32,12 +35,13 @@ const Select: React.FC<SelectProps> = ({
           isMulti={multi}
           isDisabled={disabled}
           value={value}
-          onChange={(value) => onChange(value as SelectOptions)}
+          onChange={(value) => onChange(value)}
           isClearable
           options={options}
           menuPortalTarget={document.body}
           formatOptionLabel={(option: any) => (
             <div className="flex flex-row items-center gap-3 font-normal text-dark">
+              {flags && <Flag code={option.value} className="w-5 h-5" />}
               {option.label}
             </div>
           )}

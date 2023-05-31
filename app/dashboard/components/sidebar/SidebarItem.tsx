@@ -8,6 +8,7 @@ interface SidebarItemProps {
   icon: IconType;
   notification?: boolean;
   active?: boolean;
+  onClose: () => void;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
@@ -16,6 +17,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   icon: Icon,
   notification,
   active,
+  onClose,
 }) => {
   const router = useRouter();
   return (
@@ -23,7 +25,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       className={`flex flex-row items-center p-2 cursor-pointer hover:dark:bg-dark hover:bg-light rounded-md mt-1 ${
         active && "bg-light dark:bg-dark"
       }`}
-      onClick={() => router.push(href)}
+      onClick={() => {
+        router.push(href);
+        onClose();
+      }}
     >
       <div className="relative">
         <Icon size={24} className="text-dark dark:text-light" />

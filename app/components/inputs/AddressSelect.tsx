@@ -44,7 +44,7 @@ const ReadySearchBox: React.FC<AddressSelectProps> = ({address, onSelectAddress,
   } = usePlacesAutocomplete({debounce: 300});
   const findCoordonates = async (address: string) => {
     try {
-      const results = await getGeocode({address});
+      const results = await getGeocode({address, region: "en"});
       const {lat, lng} = getLatLng(results[0]);
       return {lat, lng};
     } catch (error) {

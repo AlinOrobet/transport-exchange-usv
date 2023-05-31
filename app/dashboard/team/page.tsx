@@ -26,7 +26,7 @@ const Team = async ({searchParams}: TeamProps) => {
         />
       </Section>
       <Section fit="hidden xl:inline xl:w-2/5">
-        <CompanyDetails currentCompany={currentCompany} />
+        <CompanyDetails currentUser={currentUser} currentCompany={currentCompany} />
       </Section>
     </>
   );

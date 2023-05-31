@@ -14,8 +14,8 @@ export default async function getStats() {
   try {
     const users = transform(await prisma?.user.count());
     const companies = transform(await prisma?.company.count());
-    //const orders = transform(await prisma?.order.count());
-    return {users, companies, orders: transform(19994231)};
+    const orders = transform(await prisma?.order.count());
+    return {users, companies, orders};
   } catch (error: any) {
     throw new Error(error);
   }

@@ -11,20 +11,18 @@ datasource db {
 }
 
 model Company {
-  id                  String    @id @default(auto()) @map("_id") @db.ObjectId
-  accountType         String
-  fiscalCode          String
-  companyName         String
-  address             String
-  latitude            Float
-  longitude           Float
-  image               String?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
-  subscription        String    @default("Free")
-  subscriptionCreated DateTime?
-  subscriptionExpires DateTime?
-  userIds             User[]
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  accountType String
+  fiscalCode  String
+  companyName String
+  address     String
+  latitude    Float
+  longitude   Float
+  image       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userIds     User[]
+  languages   String[]
 }
 
 model User {
@@ -36,12 +34,12 @@ model User {
   firstName          String?
   lastName           String?
   phoneNumber        String?
-  active             Boolean  @default(false)
   role               String?
   hasDefaultPassword Boolean?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   company            Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  languages          String[]
 
   conversationIds String[]       @db.ObjectId
   conversations   Conversation[] @relation(fields: [conversationIds], references: [id])
@@ -50,6 +48,13 @@ model User {
   seenMessages   Message[] @relation("Seen", fields: [seenMessageIds], references: [id])
 
   messages Message[]
+  orders   Order[]   @relation("UserOrder")
+
+  favoriteIds   String[] @db.ObjectId
+  bets          Bet[]    @relation("UserBet")
+  wonBets       Bet[]    @relation("WinningOrder")
+  winningOrders Order[]  @relation("WinningOrder")
+  receivedBets  Bet[]    @relation("UserBeneficiary")
 }
 
 model Conversation {
@@ -80,4 +85,49 @@ model Message {
 
   senderId String @db.ObjectId
   sender   User   @relation(fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+model Bet {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  price         Int
+  createdAt     DateTime @default(now())
+  orderId       String   @db.ObjectId
+  order         Order    @relation("OrderBet", fields: [orderId], references: [id], onDelete: Cascade)
+  userId        String   @db.ObjectId
+  user          User     @relation("UserBet", fields: [userId], references: [id])
+  beneficiary   User     @relation("UserBeneficiary", fields: [beneficiaryId], references: [id])
+  beneficiaryId String   @db.ObjectId
+  winningUser   User?    @relation("WinningOrder", fields: [winningUserId], references: [id])
+  winningUserId String?  @db.ObjectId
+}
+
+model Order {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  price             Int
+  startAddress      String
+  startAddressLat   Float
+  startAddressLng   Float
+  stopAddress       String
+  stopAddressLat    Float
+  stopAddressLng    Float
+  pickupTimeStart   DateTime
+  pickupTimeEnd     DateTime
+  shippingTimeStart DateTime
+  shippingTimeEnd   DateTime
+  name              String
+  description       String?
+  image             String?
+  weight            Float?
+  width             Float?
+  height            Float?
+  truckCategory     String[]
+  status            String   @default("Posted")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  userId            String   @db.ObjectId
+  user              User     @relation("UserOrder", fields: [userId], references: [id])
+  bets              Bet[]    @relation("OrderBet")
+  isWon             Boolean  @default(false)
+  winningUser       User?    @relation("WinningOrder", fields: [winningUserId], references: [id])
+  winningUserId     String?  @db.ObjectId
 }

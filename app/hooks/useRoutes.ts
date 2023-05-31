@@ -6,14 +6,13 @@ import {RiFileList2Line, RiDashboardFill} from "react-icons/ri";
 import {FiSettings} from "react-icons/fi";
 
 interface IProps {
-  accountType: string | undefined;
   notificationChat: boolean | undefined;
   notificationSettings: boolean | undefined;
 }
 
-const useRoutes = ({accountType, notificationChat, notificationSettings}: IProps) => {
+const useRoutes = ({notificationChat, notificationSettings}: IProps) => {
   const pathname = usePathname();
-  const goodsRoutes = useMemo(
+  const routes = useMemo(
     () => [
       {
         id: 0,
@@ -62,8 +61,6 @@ const useRoutes = ({accountType, notificationChat, notificationSettings}: IProps
     ],
     [pathname, notificationSettings, notificationChat]
   );
-  if (accountType === "goods") {
-    return goodsRoutes;
-  } else return [];
+  return routes;
 };
 export default useRoutes;
