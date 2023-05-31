@@ -13,8 +13,6 @@ export interface IOrdersParams {
   range?: number;
   startDate?: string;
   endDate?: string;
-  currentUser?: SafeUser;
-  currentCompany?: SafeCompany;
 }
 
 // Funcție pentru convertirea unghiului din grade în radiani
@@ -36,16 +34,10 @@ function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: numbe
 }
 
 export default async function getOrders(params: IOrdersParams) {
-  // const currentUser = await getCurrentUser();
-  // const currentCompany = await getCurrentCompany();
-  // if (!currentUser || !currentCompany) {
-  //   throw new Error("Invalid ID");
-  // }
-
-  const {currentCompany, currentUser} = params;
-
-  if (!currentCompany || !currentUser) {
-    return {orders: [], count: 0, totalCount: 0};
+  const currentUser = await getCurrentUser();
+  const currentCompany = await getCurrentCompany();
+  if (!currentUser || !currentCompany) {
+    throw new Error("Invalid ID");
   }
 
   const {

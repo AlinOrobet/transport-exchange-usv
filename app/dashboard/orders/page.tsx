@@ -14,8 +14,6 @@ const OrdersPage = async ({searchParams}: OrdersProps) => {
   const currentCompany = await getCurrentCompany();
   const {orders, count, totalCount} = await getOrders({
     ...searchParams,
-    currentUser: currentUser,
-    currentCompany: currentCompany,
   });
   const companyUsers = await getCompanyUsers();
   return (
