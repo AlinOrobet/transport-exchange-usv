@@ -1,4 +1,5 @@
 import prisma from "@/app/libs/prismadb";
+import {SafeCompany, SafeUser} from "../types";
 import getCurrentCompany from "./getCurrentCompany";
 import getCurrentUser from "./getCurrentUser";
 
@@ -12,6 +13,8 @@ export interface IOrdersParams {
   range?: number;
   startDate?: string;
   endDate?: string;
+  currentUser?: SafeUser;
+  currentCompany?: SafeCompany;
 }
 
 // Funcție pentru convertirea unghiului din grade în radiani
@@ -33,13 +36,16 @@ function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: numbe
 }
 
 export default async function getOrders(params: IOrdersParams) {
-  const currentUser = await getCurrentUser();
-  if (!currentUser) {
-    throw new Error("Invalid ID");
-  }
-  const currentCompany = await getCurrentCompany();
-  if (!currentCompany) {
-    throw new Error("Invalid ID");
+  // const currentUser = await getCurrentUser();
+  // const currentCompany = await getCurrentCompany();
+  // if (!currentUser || !currentCompany) {
+  //   throw new Error("Invalid ID");
+  // }
+
+  const {currentCompany, currentUser} = params;
+
+  if (!currentCompany || !currentUser) {
+    return {orders: [], count: 0, totalCount: 0};
   }
 
   const {
@@ -127,7 +133,7 @@ export default async function getOrders(params: IOrdersParams) {
     },
   });
 
-  const safeOrders = orders.map((order) => ({
+  const safeOrders = orders.map((order: any) => ({
     ...order,
     user: {
       ...order.user,
@@ -151,7 +157,7 @@ export default async function getOrders(params: IOrdersParams) {
           },
         }
       : null,
-    bets: order.bets.map((bet) => ({
+    bets: order.bets.map((bet: any) => ({
       ...bet,
       createdAt: bet.createdAt.toISOString(),
       user: {
@@ -188,7 +194,7 @@ export default async function getOrders(params: IOrdersParams) {
 
   // Filtrare în funcție de distanță
   if (addressLat && addressLng && range) {
-    const result = safeOrders.filter((order) => {
+    const result = safeOrders.filter((order: any) => {
       const distanceStart = calculateDistance(
         order.startAddressLat,
         order.startAddressLng,
