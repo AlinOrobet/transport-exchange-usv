@@ -1,6 +1,6 @@
 "use client";
 import {SafeUser} from "@/app/types";
-import React, {useCallback, useState} from "react";
+import React, {useState} from "react";
 import Avatar from "../../components/Avatar";
 import ProfileDrawer from "../../components/modals/ProfileDrawer";
 import UserDetails from "../../components/UserDetails";

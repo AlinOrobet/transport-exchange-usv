@@ -42,9 +42,11 @@ export type SafeOrder = Omit<
       company: SafeCompany;
     };
   })[];
-  winningUser: SafeUser & {
-    company: SafeCompany;
-  };
+  winningUser:
+    | (SafeUser & {
+        company: SafeCompany;
+      })
+    | null;
   createdAt: string;
   updatedAt: string;
   pickupTimeStart: string;

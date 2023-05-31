@@ -2,7 +2,6 @@
 import React, {useCallback, useMemo, useState} from "react";
 import {Range} from "react-date-range";
 import {useRouter} from "next/navigation";
-import qs from "query-string";
 import {formatISO} from "date-fns";
 import Heading from "@/app/components/Heading";
 import {vehicles} from "./CreateOrderModal";
@@ -12,6 +11,7 @@ import GoogleMapComp from "@/app/components/GoogleMap";
 import Calendar from "@/app/components/inputs/Calendar";
 import Counter from "@/app/components/inputs/Counter";
 import MultiStepModal from "@/app/components/modals/MultiStepModal";
+import queryString from "query-string";
 enum STEPS {
   TRUCK = 0,
   LOCATION = 1,
@@ -75,7 +75,7 @@ const SearchOrderModal: React.FC<SearchOrderModalProps> = ({isOpen, onClose}) =>
     if (range) {
       updatedQuery.range = range;
     }
-    const url = qs.stringifyUrl(
+    const url = queryString.stringifyUrl(
       {
         url: "/dashboard/orders",
         query: updatedQuery,

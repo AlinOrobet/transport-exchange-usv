@@ -1,3 +1,4 @@
+"use client";
 import Avatar from "@/app/dashboard/components/Avatar";
 import {FullMessageType} from "@/app/types";
 import {useSession} from "next-auth/react";

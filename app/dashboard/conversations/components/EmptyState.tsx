@@ -1,8 +1,8 @@
 "use client";
 import {usePathname, useRouter} from "next/navigation";
 import React, {useMemo} from "react";
-import qs from "query-string";
 import Button from "@/app/components/Button";
+import queryString from "query-string";
 interface EmptyStateProps {
   variant?: string;
   searchNotFound?: boolean;
@@ -39,7 +39,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({variant, searchNotFound}) => {
                 const updatedQuery: any = {
                   variant,
                 };
-                const url = qs.stringifyUrl(
+                const url = queryString.stringifyUrl(
                   {
                     url: "/dashboard/orders",
                     query: updatedQuery,

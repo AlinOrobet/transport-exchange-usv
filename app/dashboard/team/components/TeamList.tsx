@@ -8,7 +8,7 @@ import UserCard from "./UserCard";
 import InviteMemberModal from "./InviteMemberModal";
 import {AiOutlineSearch} from "react-icons/ai";
 import SearchModal from "../../components/modals/SearchModal";
-import qs from "query-string";
+import queryString from "query-string";
 
 interface TeamListProps {
   isOwner: boolean | undefined;
@@ -78,13 +78,13 @@ const TeamList: React.FC<TeamListProps> = ({isOwner, users, numberOfUsers, curre
               setCurrentPage(current);
               let currentQuery = {};
               if (params) {
-                currentQuery = qs.parse(params.toString());
+                currentQuery = queryString.parse(params.toString());
               }
               const updatedQuery: any = {
                 ...currentQuery,
                 page: current,
               };
-              const url = qs.stringifyUrl(
+              const url = queryString.stringifyUrl(
                 {
                   url: "/dashboard/team",
                   query: updatedQuery,

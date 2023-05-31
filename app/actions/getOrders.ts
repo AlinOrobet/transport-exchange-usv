@@ -105,6 +105,11 @@ export default async function getOrders(params: IOrdersParams) {
           company: true,
         },
       },
+      winningUser: {
+        include: {
+          company: true,
+        },
+      },
       bets: {
         include: {
           user: {
@@ -134,6 +139,18 @@ export default async function getOrders(params: IOrdersParams) {
         updatedAt: order.user.company.updatedAt.toISOString(),
       },
     },
+    winningUser: order.winningUser
+      ? {
+          ...order.winningUser,
+          createdAt: order.winningUser.createdAt.toISOString(),
+          updatedAt: order.winningUser.updatedAt.toISOString(),
+          company: {
+            ...order.winningUser.company,
+            createdAt: order.winningUser.company.createdAt.toISOString(),
+            updatedAt: order.winningUser.company.updatedAt.toISOString(),
+          },
+        }
+      : null,
     bets: order.bets.map((bet) => ({
       ...bet,
       createdAt: bet.createdAt.toISOString(),
