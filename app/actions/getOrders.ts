@@ -37,7 +37,7 @@ export default async function getOrders(params: IOrdersParams) {
   const currentUser = await getCurrentUser();
   const currentCompany = await getCurrentCompany();
   if (!currentUser || !currentCompany) {
-    throw new Error("Invalid ID");
+    return {orders: [], count: 0, totalCount: 0};
   }
 
   const {
