@@ -24,12 +24,14 @@ const BetModal: React.FC<BetModalProps> = ({isOpen, onClose, order, companyUsers
   const [isLoading, setIsLoading] = useState(false);
 
   const options = useMemo(() => {
-    return companyUsers.map((user) => ({
-      id: user.id,
-      label:
-        user.firstName || user.lastName ? `${user.firstName} ${user.firstName}` : `${user.email}`,
-      value: user.id,
-    }));
+    return companyUsers
+      .filter((user) => user.role === "Truck driver")
+      .map((user) => ({
+        id: user.id,
+        label:
+          user.firstName || user.lastName ? `${user.firstName} ${user.firstName}` : `${user.email}`,
+        value: user.id,
+      }));
   }, [companyUsers]);
 
   const {

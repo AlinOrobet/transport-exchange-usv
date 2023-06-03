@@ -71,7 +71,7 @@ const BetCard: React.FC<BetCardProps> = ({bet, user, currentUser, isOwnOrder, dr
       />
       <div className="flex flex-row items-center justify-between w-full h-full p-2">
         <div className="flex flex-row items-center w-3/4">
-          <Avatar url={user ? user.image : null} type="User" />
+          <Avatar url={user ? user.company.image : null} type="Company" />
           <div className="flex flex-col w-full ml-3">
             <h1 className="font-bold text-left">{user.company.companyName}</h1>
             <p className="text-sm font-medium">Bet by {name}</p>

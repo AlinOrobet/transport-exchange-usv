@@ -4,13 +4,15 @@ import {AiOutlineTeam, AiOutlineMessage} from "react-icons/ai";
 import {BiSearchAlt} from "react-icons/bi";
 import {RiFileList2Line, RiDashboardFill} from "react-icons/ri";
 import {FiSettings} from "react-icons/fi";
+import {FaMapMarkedAlt} from "react-icons/fa";
 
 interface IProps {
+  accountType: string;
   notificationChat: boolean | undefined;
   notificationSettings: boolean | undefined;
 }
 
-const useRoutes = ({notificationChat, notificationSettings}: IProps) => {
+const useRoutes = ({notificationChat, notificationSettings, accountType}: IProps) => {
   const pathname = usePathname();
   const routes = useMemo(
     () => [
@@ -30,10 +32,11 @@ const useRoutes = ({notificationChat, notificationSettings}: IProps) => {
       },
       {
         id: 2,
-        label: "Search transport",
-        href: "/dashboard/home",
-        icon: BiSearchAlt,
-        active: pathname === "/dashboard",
+        label: accountType === "orders" ? "Search transport" : "Route planning",
+        href: accountType === "orders" ? "/dashboard/home" : "/dashboard/planner",
+        icon: accountType === "orders" ? BiSearchAlt : FaMapMarkedAlt,
+        active:
+          accountType === "orders" ? pathname === "/dashboard" : pathname === "/dashboard/planner",
       },
       {
         id: 3,
@@ -59,7 +62,7 @@ const useRoutes = ({notificationChat, notificationSettings}: IProps) => {
         notification: notificationSettings,
       },
     ],
-    [pathname, notificationSettings, notificationChat]
+    [pathname, notificationSettings, notificationChat, accountType]
   );
   return routes;
 };

@@ -133,18 +133,19 @@ const UserDetails: React.FC<UsersDetailsProps> = ({
           <div className="font-bold">{title}</div>
           <div className="font-semibold text-gray-900 dark:text-gray-300">{statusText}</div>
 
-          <div className="flex gap-10 my-8">
-            <div
-              onClick={() => setConfirmOpen(true)}
-              className="flex flex-col items-center gap-3 cursor-pointer hover:opacity-75"
-            >
-              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-neutral-300 dark:bg-neutral-200 text-dark">
-                <IoTrash size={20} />
+          {userIsOwner && (
+            <div className="flex gap-10 my-8">
+              <div
+                onClick={() => setConfirmOpen(true)}
+                className="flex flex-col items-center gap-3 cursor-pointer hover:opacity-75"
+              >
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-neutral-300 dark:bg-neutral-200 text-dark">
+                  <IoTrash size={20} />
+                </div>
+                <div className="text-sm font-light">Delete</div>
               </div>
-              <div className="text-sm font-light">Delete</div>
             </div>
-          </div>
-
+          )}
           <div className="w-full pt-5 pb-5 sm:px-0 sm:pt-0">
             <dl className="px-4 space-y-8 sm:space-y-6 sm:px-6">
               {data?.isGroup ? (

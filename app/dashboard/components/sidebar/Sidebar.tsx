@@ -18,6 +18,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({currentUser, currentCompany, unseenMessages}) => {
   const [open, setOpen] = useState(false);
   const routes = useRoutes({
+    accountType: currentCompany?.accountType || "",
     notificationSettings: currentUser?.hasDefaultPassword || undefined,
     notificationChat: unseenMessages,
   });

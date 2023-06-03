@@ -3,6 +3,7 @@ import Heading from "@/app/components/Heading";
 import Input from "@/app/components/inputs/Input";
 import Select from "@/app/components/inputs/Select";
 import Modal from "@/app/components/modals/Modal";
+import {SafeCompany} from "@/app/types";
 import axios from "axios";
 import {useRouter} from "next/navigation";
 import React, {useState} from "react";
@@ -12,7 +13,7 @@ import toast from "react-hot-toast";
 interface InviteMemberModalProps {
   isOpen: boolean;
   onClose: () => void;
-  currentCompany: string | undefined;
+  currentCompany: SafeCompany | null;
 }
 
 const InviteMemberModal: React.FC<InviteMemberModalProps> = ({isOpen, onClose, currentCompany}) => {
@@ -53,7 +54,7 @@ const InviteMemberModal: React.FC<InviteMemberModalProps> = ({isOpen, onClose, c
         email: data.email,
         password: code,
         role: data.role.label,
-        companyId: currentCompany,
+        companyId: currentCompany?.id,
         hasDefaultPassword: true,
       });
       try {
@@ -96,7 +97,18 @@ const InviteMemberModal: React.FC<InviteMemberModalProps> = ({isOpen, onClose, c
           label="Role"
           value={role}
           onChange={(value) => setCustomValue("role", value)}
-          options={options}
+          options={
+            currentCompany?.accountType === "transport"
+              ? [
+                  {value: "1", label: "Transport dispatcher"},
+                  {value: "2", label: "Transportation manager"},
+                  {value: "3", label: "Truck driver"},
+                ]
+              : [
+                  {value: "1", label: "Advertiser"},
+                  {value: "2", label: "Manager"},
+                ]
+          }
         />
         <div className="flex items-center justify-end gap-x-3">
           <Button disabled={isLoading} type="button" transparent onClick={onClose}>
@@ -112,8 +124,3 @@ const InviteMemberModal: React.FC<InviteMemberModalProps> = ({isOpen, onClose, c
 };
 
 export default InviteMemberModal;
-const options = [
-  {value: "1", label: "Owner"},
-  {value: "2", label: "Staff"},
-  {value: "3", label: "Employee"},
-];

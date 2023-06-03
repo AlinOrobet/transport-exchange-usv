@@ -1,6 +1,6 @@
 "use client";
 import Button from "@/app/components/Button";
-import {SafeUser} from "@/app/types";
+import {SafeCompany, SafeUser} from "@/app/types";
 import {useRouter, useSearchParams} from "next/navigation";
 import React, {useState} from "react";
 import Pagination from "../../components/Pagination";
@@ -14,7 +14,7 @@ interface TeamListProps {
   isOwner: boolean | undefined;
   users: SafeUser[];
   numberOfUsers: number;
-  currentCompany: string | undefined;
+  currentCompany: SafeCompany | null;
 }
 
 const TeamList: React.FC<TeamListProps> = ({isOwner, users, numberOfUsers, currentCompany}) => {

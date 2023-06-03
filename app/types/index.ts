@@ -4,9 +4,17 @@ export type SafeUser = Omit<User, "createdAt" | "updatedAt"> & {
   createdAt: string;
   updatedAt: string;
 };
+
+export type Stats = {
+  label: string;
+  value: number;
+};
+
 export type SafeCompany = Omit<Company, "createdAt" | "updatedAt"> & {
   createdAt: string;
   updatedAt: string;
+} & {
+  stats: Stats[];
 };
 export type FullMessageType = Message & {
   sender: User;
