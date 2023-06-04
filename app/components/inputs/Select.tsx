@@ -28,7 +28,7 @@ const Select: React.FC<SelectProps> = ({
   flags,
 }) => {
   return (
-    <div className="z-[100]">
+    <div className="z-40">
       <label className="block text-sm font-medium leading-6 text-gray-900">{label}</label>
       <div className="mt-2">
         <ReactSelect

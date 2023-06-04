@@ -32,11 +32,11 @@ const useRoutes = ({notificationChat, notificationSettings, accountType}: IProps
       },
       {
         id: 2,
-        label: accountType === "orders" ? "Search transport" : "Route planning",
-        href: accountType === "orders" ? "/dashboard/home" : "/dashboard/planner",
-        icon: accountType === "orders" ? BiSearchAlt : FaMapMarkedAlt,
+        label: accountType === "goods" ? "Search transport" : "Route planning",
+        href: accountType === "goods" ? "/dashboard/home" : "/dashboard/planner",
+        icon: accountType === "goods" ? BiSearchAlt : FaMapMarkedAlt,
         active:
-          accountType === "orders" ? pathname === "/dashboard" : pathname === "/dashboard/planner",
+          accountType === "goods" ? pathname === "/dashboard" : pathname === "/dashboard/planner",
       },
       {
         id: 3,

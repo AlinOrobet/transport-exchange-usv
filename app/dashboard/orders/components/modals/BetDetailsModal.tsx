@@ -57,14 +57,22 @@ const BetDetailsModal: React.FC<BetDetailsModalProps> = ({isOpen, onClose, user,
   const onSubmit = useCallback(() => {
     setIsLoading(true);
     axios
-      .post(`/api/order/${bet.orderId}`, {isWon: true, winningUserId: user.id})
+      .post(`/api/order/${bet.orderId}`, {
+        isWon: true,
+        winningUserId: user.id,
+        status: "In progress",
+      })
       .then(() => {
+        return axios.post(`/api/bet/${bet.id}`, {winningUserId: user.id});
+      })
+      .then(() => {
+        router.refresh();
         toast.success("Order have now a winner!");
         onClose();
       })
       .catch(() => toast.error("Something went wrong."))
       .finally(() => setIsLoading(false));
-  }, [bet.orderId, user.id, onClose]);
+  }, [bet.orderId, bet.id, user.id, onClose, router]);
   return (
     <>
       <RatingModal

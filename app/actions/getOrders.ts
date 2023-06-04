@@ -39,7 +39,6 @@ export default async function getOrders(params: IOrdersParams) {
   if (!currentUser || !currentCompany) {
     return {orders: [], count: 0, totalCount: 0};
   }
-  const companyStats = await getCompanyStats(currentCompany.id, currentCompany.accountType);
   const {
     page = 1,
     variant = currentCompany.accountType === "goods" ? "MyOrders" : "AllOrders",
@@ -237,59 +236,3 @@ export default async function getOrders(params: IOrdersParams) {
 
   return {orders: safeOrders, count, totalCount};
 }
-
-// const safeOrders = orders.map((order: any) => ({
-//   ...order,
-//   user: {
-//     ...order.user,
-//     createdAt: order.user.createdAt.toISOString(),
-//     updatedAt: order.user.updatedAt.toISOString(),
-//     company: {
-//       ...order.user.company,
-//       createdAt: order.user.company.createdAt.toISOString(),
-//       updatedAt: order.user.company.updatedAt.toISOString(),
-//     },
-//   },
-//   winningUser: order.winningUser
-//     ? {
-//         ...order.winningUser,
-//         createdAt: order.winningUser.createdAt.toISOString(),
-//         updatedAt: order.winningUser.updatedAt.toISOString(),
-//         company: {
-//           ...order.winningUser.company,
-//           createdAt: order.winningUser.company.createdAt.toISOString(),
-//           updatedAt: order.winningUser.company.updatedAt.toISOString(),
-//         },
-//       }
-//     : null,
-//   bets: order.bets.map((bet: any) => ({
-//     ...bet,
-//     createdAt: bet.createdAt.toISOString(),
-//     user: {
-//       ...bet.user,
-//       createdAt: bet.user.company.createdAt.toISOString(),
-//       updatedAt: bet.user.company.updatedAt.toISOString(),
-//       company: {
-//         ...bet.user.company,
-//         createdAt: bet.user.company.createdAt.toISOString(),
-//         updatedAt: bet.user.company.updatedAt.toISOString(),
-//       },
-//     },
-//     beneficiary: {
-//       ...bet.beneficiary,
-//       createdAt: bet.beneficiary.company.createdAt.toISOString(),
-//       updatedAt: bet.beneficiary.company.updatedAt.toISOString(),
-//       company: {
-//         ...bet.beneficiary.company,
-//         createdAt: bet.beneficiary.company.createdAt.toISOString(),
-//         updatedAt: bet.beneficiary.company.updatedAt.toISOString(),
-//       },
-//     },
-//   })),
-//   createdAt: order.createdAt.toISOString(),
-//   updatedAt: order.updatedAt.toISOString(),
-//   pickupTimeStart: order.pickupTimeStart.toISOString(),
-//   pickupTimeEnd: order.pickupTimeEnd.toISOString(),
-//   shippingTimeStart: order.shippingTimeStart.toISOString(),
-//   shippingTimeEnd: order.shippingTimeEnd.toISOString(),
-// }));
