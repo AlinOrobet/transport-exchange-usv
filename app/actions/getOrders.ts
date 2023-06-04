@@ -62,6 +62,11 @@ export default async function getOrders(params: IOrdersParams) {
       in: [...(currentUser.favoriteIds || [])],
     };
   }
+  if (variant === "OldOrders") {
+    where.status = {in: ["In progress", "Completed"]};
+  } else {
+    where.status = "Posted";
+  }
 
   const whereTotalCount: any = {...where};
 

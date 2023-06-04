@@ -117,6 +117,7 @@ const ListOfOrders: React.FC<ListOfOrdersProps> = ({
                   {id: 1, label: "My orders", value: "MyOrders"},
                   {id: 2, label: "Company orders", value: "CompanyOrders"},
                   {id: 3, label: "Favorites", value: "Favorites"},
+                  {id: 4, label: "Old orders", value: "OldOrders"},
                 ]
               : [
                   {id: 1, label: "All Orders", value: "AllOrders"},
