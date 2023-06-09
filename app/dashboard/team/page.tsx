@@ -22,7 +22,7 @@ const Team = async ({searchParams}: TeamProps) => {
           isOwner={currentUser ? (currentUser?.role === "Owner" ? true : false) : undefined}
           users={users}
           numberOfUsers={count}
-          currentCompany={currentUser ? currentUser?.companyId : undefined}
+          currentCompany={currentCompany}
         />
       </Section>
       <Section fit="hidden xl:inline xl:w-2/5">

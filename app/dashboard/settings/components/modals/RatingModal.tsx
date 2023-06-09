@@ -3,7 +3,6 @@ import Modal from "@/app/components/modals/Modal";
 import Avatar from "@/app/dashboard/components/Avatar";
 import CompanyRating from "@/app/dashboard/settings/components/modals/CompanyRating";
 import {SafeCompany} from "@/app/types";
-import React from "react";
 import Flag from "react-world-flags";
 
 interface RatingModalProps {
@@ -28,7 +27,7 @@ const RatingModal: React.FC<RatingModalProps> = ({isOpen, onClose, currentCompan
             </div>
           </div>
         </div>
-        <CompanyRating />
+        <CompanyRating currentCompany={currentCompany} />
       </div>
     </Modal>
   );

@@ -1,5 +1,6 @@
 import getSession from "./getSession";
 import prisma from "@/app/libs/prismadb";
+import getCompanyStats from "./getCompanyStats";
 
 export default async function getCurrentCompany() {
   try {
@@ -30,6 +31,7 @@ export default async function getCurrentCompany() {
       ...company,
       createdAt: currentUser.createdAt.toISOString(),
       updatedAt: currentUser.updatedAt.toISOString(),
+      stats: await getCompanyStats(company.id, company.accountType),
     };
   } catch (error: any) {
     return null;

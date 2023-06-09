@@ -32,7 +32,7 @@ const MapDetails: React.FC<MapDetailsProps> = ({orderDetails, companyType}) => {
       <Details label="Distance" value={orderDetails.distance} />
       <Details label="Time" value={orderDetails.time} />
       <div className="hidden sm:inline">
-        <Details label="Cost/100KM" value={orderDetails.costKm} />
+        <Details label="Max Cost/100KM" value={orderDetails.costKm} />
       </div>
       <div className="sm:hidden">
         <Details
@@ -41,7 +41,7 @@ const MapDetails: React.FC<MapDetailsProps> = ({orderDetails, companyType}) => {
         />
       </div>
       <div className="inline sm:hidden">
-        <Details label="Cost/100KM" value={orderDetails.costKm} />
+        <Details label="Max Cost/100KM" value={orderDetails.costKm} />
       </div>
       <Details label="Price" value={orderDetails.price} />
       <div className="hidden sm:inline">

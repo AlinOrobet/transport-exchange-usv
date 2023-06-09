@@ -12,7 +12,9 @@ interface OrdersProps {
 const OrdersPage = async ({searchParams}: OrdersProps) => {
   const currentUser = await getCurrentUser();
   const currentCompany = await getCurrentCompany();
-  const {orders, count, totalCount} = await getOrders({...searchParams});
+  const {orders, count, totalCount} = await getOrders({
+    ...searchParams,
+  });
   const companyUsers = await getCompanyUsers();
   return (
     <>

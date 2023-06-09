@@ -1,7 +1,7 @@
 "use client";
 import {SafeCompany, SafeOrder, SafeUser} from "@/app/types";
 import {useRouter, useSearchParams} from "next/navigation";
-import qs from "query-string";
+import queryString from "query-string";
 import React, {useState, useMemo} from "react";
 import {AiOutlineSearch} from "react-icons/ai";
 import Pagination from "../../components/Pagination";
@@ -67,7 +67,7 @@ const ListOfOrders: React.FC<ListOfOrdersProps> = ({
                   page: currentPage,
                   variant,
                 };
-                const url = qs.stringifyUrl(
+                const url = queryString.stringifyUrl(
                   {
                     url: "/dashboard/orders",
                     query: updatedQuery,
@@ -102,7 +102,7 @@ const ListOfOrders: React.FC<ListOfOrdersProps> = ({
             const updatedQuery: any = {
               variant: variant,
             };
-            const url = qs.stringifyUrl(
+            const url = queryString.stringifyUrl(
               {
                 url: "/dashboard/orders",
                 query: updatedQuery,
@@ -117,6 +117,7 @@ const ListOfOrders: React.FC<ListOfOrdersProps> = ({
                   {id: 1, label: "My orders", value: "MyOrders"},
                   {id: 2, label: "Company orders", value: "CompanyOrders"},
                   {id: 3, label: "Favorites", value: "Favorites"},
+                  {id: 4, label: "Old orders", value: "OldOrders"},
                 ]
               : [
                   {id: 1, label: "All Orders", value: "AllOrders"},
@@ -152,13 +153,13 @@ const ListOfOrders: React.FC<ListOfOrdersProps> = ({
                 setCurrentPage(current);
                 let currentQuery = {};
                 if (params) {
-                  currentQuery = qs.parse(params.toString());
+                  currentQuery = queryString.parse(params.toString());
                 }
                 const updatedQuery: any = {
                   ...currentQuery,
                   page: current,
                 };
-                const url = qs.stringifyUrl(
+                const url = queryString.stringifyUrl(
                   {
                     url: "/dashboard/orders",
                     query: updatedQuery,

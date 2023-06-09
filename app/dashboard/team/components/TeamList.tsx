@@ -1,6 +1,6 @@
 "use client";
 import Button from "@/app/components/Button";
-import {SafeUser} from "@/app/types";
+import {SafeCompany, SafeUser} from "@/app/types";
 import {useRouter, useSearchParams} from "next/navigation";
 import React, {useState} from "react";
 import Pagination from "../../components/Pagination";
@@ -8,13 +8,13 @@ import UserCard from "./UserCard";
 import InviteMemberModal from "./InviteMemberModal";
 import {AiOutlineSearch} from "react-icons/ai";
 import SearchModal from "../../components/modals/SearchModal";
-import qs from "query-string";
+import queryString from "query-string";
 
 interface TeamListProps {
   isOwner: boolean | undefined;
   users: SafeUser[];
   numberOfUsers: number;
-  currentCompany: string | undefined;
+  currentCompany: SafeCompany | null;
 }
 
 const TeamList: React.FC<TeamListProps> = ({isOwner, users, numberOfUsers, currentCompany}) => {
@@ -78,13 +78,13 @@ const TeamList: React.FC<TeamListProps> = ({isOwner, users, numberOfUsers, curre
               setCurrentPage(current);
               let currentQuery = {};
               if (params) {
-                currentQuery = qs.parse(params.toString());
+                currentQuery = queryString.parse(params.toString());
               }
               const updatedQuery: any = {
                 ...currentQuery,
                 page: current,
               };
-              const url = qs.stringifyUrl(
+              const url = queryString.stringifyUrl(
                 {
                   url: "/dashboard/team",
                   query: updatedQuery,

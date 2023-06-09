@@ -1,4 +1,5 @@
 import prisma from "@/app/libs/prismadb";
+import getCompanyStats from "./getCompanyStats";
 import getCurrentCompany from "./getCurrentCompany";
 import getCurrentUser from "./getCurrentUser";
 
@@ -34,14 +35,10 @@ function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: numbe
 
 export default async function getOrders(params: IOrdersParams) {
   const currentUser = await getCurrentUser();
-  if (!currentUser) {
-    throw new Error("Invalid ID");
-  }
   const currentCompany = await getCurrentCompany();
-  if (!currentCompany) {
-    throw new Error("Invalid ID");
+  if (!currentUser || !currentCompany) {
+    return {orders: [], count: 0, totalCount: 0};
   }
-
   const {
     page = 1,
     variant = currentCompany.accountType === "goods" ? "MyOrders" : "AllOrders",
@@ -65,6 +62,11 @@ export default async function getOrders(params: IOrdersParams) {
       in: [...(currentUser.favoriteIds || [])],
     };
   }
+  if (variant === "OldOrders") {
+    where.status = {in: ["In progress", "Completed"]};
+  } else {
+    where.status = "Posted";
+  }
 
   const whereTotalCount: any = {...where};
 
@@ -76,31 +78,42 @@ export default async function getOrders(params: IOrdersParams) {
   }
 
   if (address && !range) {
-    where.AND = {OR: [{startAddress: {contains: address}}, {stopAddress: {contains: address}}]};
+    where.OR = [{startAddress: {contains: address}}, {stopAddress: {contains: address}}];
   }
 
   if (startDate && endDate) {
-    where.AND = {
-      OR: [
-        {
-          pickupTimeStart: {lte: startDate},
-          pickupTimeEnd: {gte: endDate},
-        },
-        {
-          shippingTimeStart: {lte: startDate},
-          shippingTimeEnd: {gte: endDate},
-        },
-      ],
-    };
+    where.OR = [
+      {
+        pickupTimeStart: {lte: startDate},
+        pickupTimeEnd: {gte: endDate},
+      },
+      {
+        pickupTimeStart: {lte: endDate},
+        pickupTimeEnd: {gte: startDate},
+      },
+      {
+        shippingTimeStart: {lte: startDate},
+        shippingTimeEnd: {gte: endDate},
+      },
+      {
+        shippingTimeStart: {lte: endDate},
+        shippingTimeEnd: {gte: startDate},
+      },
+    ];
   }
 
   const orders = await prisma.order.findMany({
     where,
-    orderBy: {createdAt: "desc"},
+    orderBy: {pickupTimeStart: "asc"},
     skip: (page - 1) * 10,
     take: 10,
     include: {
       user: {
+        include: {
+          company: true,
+        },
+      },
+      winningUser: {
         include: {
           company: true,
         },
@@ -122,56 +135,93 @@ export default async function getOrders(params: IOrdersParams) {
     },
   });
 
-  const safeOrders = orders.map((order) => ({
-    ...order,
-    user: {
-      ...order.user,
-      createdAt: order.user.createdAt.toISOString(),
-      updatedAt: order.user.updatedAt.toISOString(),
-      company: {
-        ...order.user.company,
-        createdAt: order.user.company.createdAt.toISOString(),
-        updatedAt: order.user.company.updatedAt.toISOString(),
-      },
-    },
-    bets: order.bets.map((bet) => ({
-      ...bet,
-      createdAt: bet.createdAt.toISOString(),
-      user: {
-        ...bet.user,
-        createdAt: bet.user.company.createdAt.toISOString(),
-        updatedAt: bet.user.company.updatedAt.toISOString(),
-        company: {
-          ...bet.user.company,
-          createdAt: bet.user.company.createdAt.toISOString(),
-          updatedAt: bet.user.company.updatedAt.toISOString(),
+  const safeOrders = await Promise.all(
+    orders.map(async (order: any) => {
+      const companyStats = await getCompanyStats(order.user.company.id, order.user.accountType); // Apelul la acțiunea getCompanyStats pentru fiecare companie
+
+      return {
+        ...order,
+        user: {
+          ...order.user,
+          createdAt: order.user.createdAt.toISOString(),
+          updatedAt: order.user.updatedAt.toISOString(),
+          company: {
+            ...order.user.company,
+            createdAt: order.user.company.createdAt.toISOString(),
+            updatedAt: order.user.company.updatedAt.toISOString(),
+            stats: companyStats, // Adăugarea statisticilor în obiectul companiei
+          },
         },
-      },
-      beneficiary: {
-        ...bet.beneficiary,
-        createdAt: bet.beneficiary.company.createdAt.toISOString(),
-        updatedAt: bet.beneficiary.company.updatedAt.toISOString(),
-        company: {
-          ...bet.beneficiary.company,
-          createdAt: bet.beneficiary.company.createdAt.toISOString(),
-          updatedAt: bet.beneficiary.company.updatedAt.toISOString(),
-        },
-      },
-    })),
-    createdAt: order.createdAt.toISOString(),
-    updatedAt: order.updatedAt.toISOString(),
-    pickupTimeStart: order.pickupTimeStart.toISOString(),
-    pickupTimeEnd: order.pickupTimeEnd.toISOString(),
-    shippingTimeStart: order.shippingTimeStart.toISOString(),
-    shippingTimeEnd: order.shippingTimeEnd.toISOString(),
-  }));
+        winningUser: order.winningUser
+          ? {
+              ...order.winningUser,
+              createdAt: order.winningUser.createdAt.toISOString(),
+              updatedAt: order.winningUser.updatedAt.toISOString(),
+              company: {
+                ...order.winningUser.company,
+                createdAt: order.winningUser.company.createdAt.toISOString(),
+                updatedAt: order.winningUser.company.updatedAt.toISOString(),
+                stats: await getCompanyStats(
+                  order.winningUser.company.id,
+                  order.winningUser.company.accountType
+                ), // Apelul la acțiunea getCompanyStats pentru compania câștigătoare (dacă există)
+              },
+            }
+          : null,
+        bets: await Promise.all(
+          order.bets.map(async (bet: any) => {
+            const userStats = await getCompanyStats(
+              bet.user.company.id,
+              bet.user.company.accountType
+            ); // Apelul la acțiunea getCompanyStats pentru compania utilizatorului
+
+            return {
+              ...bet,
+              createdAt: bet.createdAt.toISOString(),
+              user: {
+                ...bet.user,
+                createdAt: bet.user.createdAt.toISOString(),
+                updatedAt: bet.user.updatedAt.toISOString(),
+                company: {
+                  ...bet.user.company,
+                  createdAt: bet.user.company.createdAt.toISOString(),
+                  updatedAt: bet.user.company.updatedAt.toISOString(),
+                  stats: userStats, // Adăugarea statisticilor în obiectul companiei utilizatorului
+                },
+              },
+              beneficiary: {
+                ...bet.beneficiary,
+                createdAt: bet.beneficiary.createdAt.toISOString(),
+                updatedAt: bet.beneficiary.updatedAt.toISOString(),
+                company: {
+                  ...bet.beneficiary.company,
+                  createdAt: bet.beneficiary.company.createdAt.toISOString(),
+                  updatedAt: bet.beneficiary.company.updatedAt.toISOString(),
+                  stats: await getCompanyStats(
+                    bet.beneficiary.company.id,
+                    bet.beneficiary.company.accountType
+                  ), // Apelul la acțiunea getCompanyStats pentru compania beneficiarului
+                },
+              },
+            };
+          })
+        ),
+        createdAt: order.createdAt.toISOString(),
+        updatedAt: order.updatedAt.toISOString(),
+        pickupTimeStart: order.pickupTimeStart.toISOString(),
+        pickupTimeEnd: order.pickupTimeEnd.toISOString(),
+        shippingTimeStart: order.shippingTimeStart.toISOString(),
+        shippingTimeEnd: order.shippingTimeEnd.toISOString(),
+      };
+    })
+  );
 
   const count = await prisma.order.count({where});
   const totalCount = await prisma.order.count({where: whereTotalCount});
 
   // Filtrare în funcție de distanță
   if (addressLat && addressLng && range) {
-    const result = safeOrders.filter((order) => {
+    const result = safeOrders.filter((order: any) => {
       const distanceStart = calculateDistance(
         order.startAddressLat,
         order.startAddressLng,

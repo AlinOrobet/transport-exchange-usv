@@ -12,7 +12,7 @@ export interface IUsersParams {
 export default async function getUsers(params: IUsersParams) {
   const currentUser = await getCurrentUser();
   if (!currentUser) {
-    throw new Error("Invalid ID");
+    return {users: [], count: 0};
   }
   const {page = 1, companyId = "", value = "", orderBy = "", filterBy = ""} = params;
 

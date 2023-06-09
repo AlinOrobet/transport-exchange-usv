@@ -120,31 +120,29 @@ const Map: React.FC<GoogleMapComProps> = ({
     let consumption = 0;
     const fuelCost = 5;
     if (order?.truck) {
-      const totalConsume = order.truck
-        .map((item) => {
-          const foundVehicle = vehicles.find((vehicle) => item === vehicle.label);
-          return foundVehicle ? foundVehicle.consume : 0;
-        })
-        .reduce((sum, consume) => sum + consume, 0);
-      consumption = totalConsume / 3;
-      costKm = `${(consumption * fuelCost).toFixed(2)}$`;
+      consumption = order.truck.reduce((max, item) => {
+        const foundVehicle = vehicles.find((vehicle) => item === vehicle.label);
+        const consume = foundVehicle ? foundVehicle.consume : 0;
+        return consume > max ? consume : max;
+      }, 0);
+      costKm = `${(consumption * fuelCost).toFixed(2)}RON`;
     }
     if (distance && order?.price) {
       const numericDistance = parseFloat(distance.replace(",", ""));
       const fuelNeeded = (consumption * numericDistance) / 100;
       const totalFuelCost = fuelNeeded * fuelCost;
-      if (companyType === "goods") {
-        profit = `${(order.price - totalFuelCost).toFixed(2)}$`;
+      if (companyType !== "goods") {
+        profit = `${(order.price - totalFuelCost).toFixed(2)}RON`;
       } else {
-        profit = `${totalFuelCost.toFixed(2)}$`;
+        profit = `${totalFuelCost.toFixed(2)}RON`;
       }
     }
     return {
       distance: distance || "0.0km",
       time: time || "0m",
-      price: order?.price ? `${order.price}$` : "0$",
-      profit: profit || "0$",
-      costKm: costKm || "0$",
+      price: order?.price ? `${order.price.toFixed(2)}RON` : "0RON",
+      profit: profit || "0RON",
+      costKm: costKm || "0RON",
     };
   }, [directions?.routes, order, companyType]);
 
