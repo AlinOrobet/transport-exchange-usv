@@ -49,7 +49,6 @@ const Map: React.FC<GoogleMapMultiRouteProps> = ({center, locations, details, or
     [center]
   );
   const [directions, setDirections] = useState<DirectionsResult>();
-  console.log(directions?.routes[0].legs.length);
   useEffect(() => {
     const fetchDirections = (locations: any) => {
       if (!locations) return;
