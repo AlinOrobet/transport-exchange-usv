@@ -55,6 +55,7 @@ const InviteMemberModal: React.FC<InviteMemberModalProps> = ({isOpen, onClose, c
         password: code,
         role: data.role.label,
         companyId: currentCompany?.id,
+        haveCompanyDetails: true,
         hasDefaultPassword: true,
       });
       try {

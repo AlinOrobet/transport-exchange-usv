@@ -4,8 +4,8 @@ import Container from "../components/Container";
 import ChangePasswordModal from "../components/modals/ChangePassword";
 import Contact from "./components/contact/Contact";
 import Features from "./components/features/Features";
-import Footer from "./components/footer/Footer";
 import Hero from "./components/hero/Hero";
+import CreateCompany from "./components/modals/CreateCompany";
 import LoginModal from "./components/modals/LoginModal";
 import RegisterModal from "./components/modals/RegisterModal";
 import Navbar from "./components/navbar/Navbar";
@@ -17,6 +17,7 @@ const Home = async () => {
     <>
       <ChangePasswordModal />
       <RegisterModal />
+      <CreateCompany />
       <LoginModal />
       <Container>
         <Navbar currentUser={currentUser} />

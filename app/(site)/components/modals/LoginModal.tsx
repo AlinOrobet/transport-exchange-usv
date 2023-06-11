@@ -11,6 +11,8 @@ import toast from "react-hot-toast";
 import {signIn} from "next-auth/react";
 import useChangePasswordModal from "@/app/hooks/useChangePasswordModal";
 import MultiStepModal from "@/app/components/modals/MultiStepModal";
+import AuthSocialButton from "@/app/components/AuthSocialButton";
+import {BsGithub, BsGoogle} from "react-icons/bs";
 const LoginModal = () => {
   const router = useRouter();
   const loginModal = useLoginModal();
@@ -92,14 +94,34 @@ const LoginModal = () => {
     loginModal.onClose();
     registerModal.onOpen();
   }, [loginModal, registerModal]);
-
+  const socialAction = (action: string) => {
+    setIsLoading(true);
+    signIn(action, {redirect: false})
+      .then((callback) => {
+        if (callback?.error) {
+          toast.error("Invalid credentials");
+        }
+      })
+      .finally(() => setIsLoading(false));
+  };
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-300" />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-2 text-gray-500 bg-white">Or continue with</span>
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <AuthSocialButton icon={BsGoogle} onClick={() => socialAction("google")} />
+      </div>
       <div className="font-light text-center text-dark">
         <div className="flex flex-row items-center justify-center">
           <div>
             First time using?{" "}
-            <span onClick={toggle} className="cursor-pointer text-dark hover:underline">
+            <span onClick={toggle} className="underline cursor-pointer text-dark">
               Create an account
             </span>
           </div>

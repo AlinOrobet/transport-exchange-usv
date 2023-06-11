@@ -11,6 +11,10 @@ import Input from "@/app/components/inputs/Input";
 import AddressSelect from "@/app/components/inputs/AddressSelect";
 import GoogleMapComp from "@/app/components/GoogleMap";
 import MultiStepModal from "@/app/components/modals/MultiStepModal";
+import AuthSocialButton from "@/app/components/AuthSocialButton";
+import {BsGithub, BsGoogle} from "react-icons/bs";
+import {signIn} from "next-auth/react";
+import {useRouter} from "next/navigation";
 enum STEPS {
   ACCOUNT = 0,
   VERIFY_EMAIL = 1,
@@ -19,6 +23,7 @@ enum STEPS {
 }
 
 const RegisterModal = () => {
+  const router = useRouter();
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
@@ -131,6 +136,7 @@ const RegisterModal = () => {
         companyId: res?.data.id,
         email: data.email,
         password: data.password,
+        haveCompanyDetails: true,
       };
       await axios
         .post("/api/register", userData)
@@ -198,8 +204,30 @@ const RegisterModal = () => {
     loginModal.onOpen();
   }, [loginModal, registerModal]);
 
+  const socialAction = (action: string) => {
+    setIsLoading(true);
+    signIn(action, {redirect: false})
+      .then((callback) => {
+        if (callback?.error) {
+          toast.error("Invalid credentials");
+        }
+      })
+      .finally(() => setIsLoading(false));
+  };
+
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-300" />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-2 text-gray-500 bg-white">Or continue with</span>
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <AuthSocialButton icon={BsGoogle} onClick={() => socialAction("google")} />
+      </div>
       <div className="font-light text-center text-neutral-500 dark:text-neutral-100">
         <div className="flex flex-row items-center justify-center">
           <div className="text-dark">

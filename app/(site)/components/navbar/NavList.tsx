@@ -8,6 +8,7 @@ import {BsGithub, BsLinkedin} from "react-icons/bs";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
 import {SafeUser} from "@/app/types";
+import useCreateCompanyModal from "@/app/hooks/useCreateCompanyModal";
 interface NavListProps {
   currentUser: SafeUser | null;
   row?: boolean;
@@ -17,6 +18,7 @@ interface NavListProps {
 const NavList: React.FC<NavListProps> = ({currentUser, row, closeMobileNavbar}) => {
   const router = useRouter();
   const loginModal = useLoginModal();
+  const createCompanyModal = useCreateCompanyModal();
   const registerModal = useRegisterModal();
   return (
     <div
@@ -33,7 +35,17 @@ const NavList: React.FC<NavListProps> = ({currentUser, row, closeMobileNavbar}) 
         <div className="flex flex-row items-center space-x-2">
           {currentUser ? (
             <>
-              <Button onClick={() => router.push("/dashboard/home")}>Dashboard</Button>
+              <Button
+                onClick={() => {
+                  if (currentUser.haveCompanyDetails) {
+                    router.push("/dashboard/home");
+                  } else {
+                    createCompanyModal.onOpen();
+                  }
+                }}
+              >
+                Dashboard
+              </Button>
             </>
           ) : (
             <>
@@ -48,7 +60,17 @@ const NavList: React.FC<NavListProps> = ({currentUser, row, closeMobileNavbar}) 
       ) : (
         <div className="flex flex-col items-center">
           {currentUser ? (
-            <NavItem name="Dashboard" href="/dashboard/home" />
+            <>
+              {currentUser.haveCompanyDetails ? (
+                <NavItem name="Dashboard" href="/dashboard/home" />
+              ) : (
+                <NavItem
+                  name="Dashboard"
+                  displayModal={createCompanyModal.onOpen}
+                  handleOpen={closeMobileNavbar}
+                />
+              )}
+            </>
           ) : (
             <div className="flex flex-col items-center">
               <NavItem
