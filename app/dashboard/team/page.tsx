@@ -13,7 +13,7 @@ const Team = async ({searchParams}: TeamProps) => {
   const currentCompany = await getCurrentCompany();
   const {users, count} = await getUsers({
     ...searchParams,
-    companyId: currentUser?.companyId,
+    companyId: currentUser?.companyId ? currentUser.companyId : "",
   });
   return (
     <>
