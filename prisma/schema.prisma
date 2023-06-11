@@ -26,19 +26,22 @@ model Company {
 }
 
 model User {
-  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
-  companyId          String   @db.ObjectId
-  email              String   @unique
-  hashedPassword     String
+  id                 String    @id @default(auto()) @map("_id") @db.ObjectId
+  companyId          String?   @db.ObjectId
+  email              String    @unique
+  name               String?
+  emailVerified      DateTime?
+  haveCompanyDetails Boolean   @default(false)
+  hashedPassword     String?
   image              String?
   firstName          String?
   lastName           String?
   phoneNumber        String?
-  role               String?
+  role               String    @default("Owner")
   hasDefaultPassword Boolean?
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-  company            Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  company            Company?  @relation(fields: [companyId], references: [id], onDelete: Cascade)
   languages          String[]
 
   conversationIds String[]       @db.ObjectId
@@ -50,11 +53,31 @@ model User {
   messages Message[]
   orders   Order[]   @relation("UserOrder")
 
-  favoriteIds   String[] @db.ObjectId
-  bets          Bet[]    @relation("UserBet")
-  wonBets       Bet[]    @relation("WinningOrder")
-  winningOrders Order[]  @relation("WinningOrder")
-  receivedBets  Bet[]    @relation("UserBeneficiary")
+  favoriteIds   String[]  @db.ObjectId
+  bets          Bet[]     @relation("UserBet")
+  wonBets       Bet[]     @relation("WinningOrder")
+  winningOrders Order[]   @relation("WinningOrder")
+  receivedBets  Bet[]     @relation("UserBeneficiary")
+  accounts      Account[]
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
 }
 
 model Conversation {

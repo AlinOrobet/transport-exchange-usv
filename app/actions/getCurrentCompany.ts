@@ -15,7 +15,7 @@ export default async function getCurrentCompany() {
       },
     });
 
-    if (!currentUser) {
+    if (!currentUser || !currentUser?.companyId) {
       return null;
     }
 

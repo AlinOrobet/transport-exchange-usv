@@ -4,7 +4,7 @@ import {NextResponse} from "next/server";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const {email, password, companyId, role, hasDefaultPassword} = body;
+  const {email, password, companyId, role, hasDefaultPassword, haveCompanyDetails} = body;
 
   if (!email || !companyId || !password) return NextResponse.error();
 
@@ -25,6 +25,7 @@ export async function POST(request: Request) {
       hashedPassword,
       role: role ? role : "Owner",
       hasDefaultPassword: hasDefaultPassword ? true : false,
+      haveCompanyDetails: haveCompanyDetails ? true : false,
     },
   });
   return NextResponse.json(user);
