@@ -37,7 +37,7 @@ const TeamList: React.FC<TeamListProps> = ({isOwner, users, numberOfUsers, curre
         isOpen={searchModal}
         onClose={() => setSearchModal(false)}
         title="Search team mates"
-        subtitle="habarnma"
+        subtitle=""
         options={options}
       />
       <div className="flex flex-col h-full space-y-2">
