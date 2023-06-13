@@ -77,7 +77,7 @@ const BetCard: React.FC<BetCardProps> = ({bet, user, currentUser, isOwnOrder, dr
             <p className="text-sm font-medium">Bet by {name}</p>
             {isOwnOrder || isOwnBet ? (
               <p className="text-sm font-bold">
-                <span className="font-normal">Bet :</span> {bet.price}$
+                <span className="font-normal">Bet :</span> {bet.price}RON
               </p>
             ) : (
               <span>{postedTime}</span>

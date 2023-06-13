@@ -1,7 +1,6 @@
 "use client";
 import {SafeCompany, SafeOrder, SafeUser} from "@/app/types";
-import React, {useEffect, useMemo, useState} from "react";
-import {Libraries, useGoogleMapsScript} from "use-google-maps-script";
+import React, {useMemo} from "react";
 import Section from "../../components/Section";
 import OrderCard from "../../orders/components/OrderCard";
 import GoogleMapMultiRoute from "./GoogleMapMultiRoute";
@@ -12,47 +11,28 @@ interface PlannerProps {
   currentUser: SafeUser | null;
   currentCompany: SafeCompany | null;
 }
-const libraries: Libraries = ["places"];
 
-const RenderPlanner: React.FC<PlannerProps> = ({orders, drivers, currentUser, currentCompany}) => {
-  const {isLoaded, loadError} = useGoogleMapsScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
-    libraries,
-  });
-  if (!isLoaded) return null;
-  if (loadError) return <div>Error loading</div>;
-  return (
-    <Planner
-      orders={orders}
-      drivers={drivers}
-      currentCompany={currentCompany}
-      currentUser={currentUser}
-    />
-  );
-};
-export default RenderPlanner;
 const Planner: React.FC<PlannerProps> = ({orders, drivers, currentUser, currentCompany}) => {
-  const extractedLocations = useMemo(() => {
-    return orders.flatMap((order) => [
-      {
+  const locationsState = useMemo(() => {
+    const extractedLocations: any[] = [];
+    orders.map((order) => {
+      const startLocation = {
         address: order.startAddress,
         startPeriod: order.pickupTimeStart,
         endPeriod: order.pickupTimeEnd,
         lat: order.startAddressLat,
         lng: order.startAddressLng,
-      },
-      {
+      };
+      const stopLocation = {
         address: order.stopAddress,
         startPeriod: order.shippingTimeStart,
         endPeriod: order.shippingTimeEnd,
         lat: order.stopAddressLat,
         lng: order.stopAddressLng,
-      },
-    ]);
-  }, [orders]);
-
-  const sortedLocations = useMemo(() => {
-    return [...extractedLocations].sort((a, b) => {
+      };
+      extractedLocations.push(startLocation, stopLocation);
+    });
+    extractedLocations.sort((a, b) => {
       const startPeriodA = new Date(a.startPeriod);
       const startPeriodB = new Date(b.startPeriod);
       const endPeriodA = new Date(a.endPeriod);
@@ -72,104 +52,27 @@ const Planner: React.FC<PlannerProps> = ({orders, drivers, currentUser, currentC
         }
       }
     });
-  }, [extractedLocations]);
-  function convertDurationToMinutes(durationText: string) {
-    const durationParts = durationText.split(" ");
+    if (extractedLocations.length === 0) return {};
+    const sumLat = extractedLocations.reduce((acc, location) => {
+      return acc + location.lat;
+    }, 0);
 
-    let totalMinutes = 0;
-
-    for (let i = 0; i < durationParts.length; i += 2) {
-      const value = parseInt(durationParts[i]);
-      const unit = durationParts[i + 1];
-
-      if (unit.includes("day")) {
-        totalMinutes += value * 24 * 60;
-      } else if (unit.includes("hour")) {
-        totalMinutes += value * 60;
-      } else if (unit.includes("min")) {
-        totalMinutes += value;
-      }
-    }
-
-    return totalMinutes;
-  }
-  const [calculatedDurations, setCalculatedDurations] = useState<number[]>([]);
-  const [validatedOrders, setValidatedOrders] = useState<any[]>([]);
-
-  useEffect(() => {
-    const calculateDurations = async () => {
-      const newDurations: number[] = [];
-      for (let i = 0; i < sortedLocations.length - 1; i++) {
-        const startLocation = sortedLocations[i];
-        const endLocation = sortedLocations[i + 1];
-
-        const directionsService = new google.maps.DirectionsService();
-        const request = {
-          origin: new google.maps.LatLng(startLocation.lat, startLocation.lng),
-          destination: new google.maps.LatLng(endLocation.lat, endLocation.lng),
-          travelMode: google.maps.TravelMode.DRIVING,
-        };
-
-        await new Promise<void>((resolve) => {
-          directionsService.route(request, (result, status) => {
-            if (status === google.maps.DirectionsStatus.OK) {
-              const duration = result?.routes[0]?.legs[0]?.duration?.text;
-              duration ? newDurations.push(convertDurationToMinutes(duration)) : null;
-            }
-            resolve();
-          });
-        });
-      }
-
-      setCalculatedDurations(newDurations);
+    const sumLng = extractedLocations.reduce((acc, location) => {
+      return acc + location.lng;
+    }, 0);
+    const centerLat = sumLat / extractedLocations.length;
+    const centerLng = sumLng / extractedLocations.length;
+    return {
+      locations: extractedLocations,
+      center: [centerLat, centerLng],
     };
-    const checkTransportFeasibility = () => {
-      const okOrders: any[] = [];
-      for (let i = 0; i < sortedLocations.length - 1; i++) {
-        const currentLocation = sortedLocations[i];
-        const nextLocation = sortedLocations[i + 1];
-        const travelTime = calculatedDurations[i] * 60 * 1000;
-
-        const pickUpStartDate = new Date(currentLocation.startPeriod);
-        const pickUpEndDate = new Date(currentLocation.endPeriod);
-        const deliveryStartDate = new Date(nextLocation.startPeriod);
-        const deliveryEndDate = new Date(nextLocation.endPeriod);
-
-        let ok = false;
-        for (let i = pickUpStartDate.getDate(); i <= pickUpEndDate.getDate(); i++) {
-          const preluare: Date = new Date(i);
-          const livrare: Date = new Date(preluare.getTime() + travelTime);
-          if (livrare >= deliveryStartDate && livrare <= deliveryEndDate) {
-            ok = true;
-            break;
-          }
-        }
-        if (ok) {
-          okOrders.push(currentLocation);
-        }
-      }
-      setValidatedOrders(okOrders);
-    };
-
-    calculateDurations();
-    checkTransportFeasibility();
-  }, [sortedLocations, calculatedDurations]);
-
-  const sumLat = sortedLocations.reduce((acc, location) => {
-    return acc + location.lat;
-  }, 0);
-
-  const sumLng = sortedLocations.reduce((acc, location) => {
-    return acc + location.lng;
-  }, 0);
-
-  const centerLat = sortedLocations.length > 0 ? sumLat / sortedLocations.length : 0;
-  const centerLng = sortedLocations.length > 0 ? sumLng / sortedLocations.length : 0;
-
-  const ordersPrice = orders.reduce((accumulator, order) => {
-    return accumulator + order.price;
-  }, 0);
-
+  }, [orders]);
+  const ordersPrice = useMemo(() => {
+    const totalPrice = orders.reduce((accumulator, order) => {
+      return accumulator + order.price;
+    }, 0);
+    return totalPrice;
+  }, [orders]);
   return (
     <>
       <Section fit="hidden xl:inline xl:w-2/5">
@@ -201,13 +104,13 @@ const Planner: React.FC<PlannerProps> = ({orders, drivers, currentUser, currentC
               </div>
             )}
           </div>
-          <div className="">All orders details</div>
+          <div></div>
         </div>
       </Section>
       <Section fit="h-full w-full xl:w-3/5 flex flex-col">
         <GoogleMapMultiRoute
-          center={[centerLat, centerLng]}
-          locations={extractedLocations}
+          center={locationsState.center}
+          locations={locationsState.locations}
           ordersPrice={ordersPrice}
           details
         />
@@ -215,3 +118,5 @@ const Planner: React.FC<PlannerProps> = ({orders, drivers, currentUser, currentC
     </>
   );
 };
+
+export default Planner;

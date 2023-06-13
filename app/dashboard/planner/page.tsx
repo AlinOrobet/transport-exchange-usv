@@ -3,7 +3,7 @@ import getCurrentCompany from "@/app/actions/getCurrentCompany";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import getWonOrders, {IWonOrdersParams} from "@/app/actions/getWonOrders";
 import React from "react";
-import RenderPlanner from "./components/Planner";
+import Planner from "./components/Planner";
 
 interface PlannerProps {
   searchParams: IWonOrdersParams;
@@ -18,7 +18,7 @@ const PlannerPage = async ({searchParams}: PlannerProps) => {
     return null;
   }
   return (
-    <RenderPlanner
+    <Planner
       orders={wonOrders}
       drivers={companyUsers.filter((user) => user.role === "Truck driver")}
       currentCompany={currentCompany}

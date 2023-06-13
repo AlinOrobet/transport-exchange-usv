@@ -42,6 +42,7 @@ const Header: React.FC<HeaderProps> = ({conversation}) => {
           confirmModalTitle="Delete conversation"
           confrimModalSubtitle="Are you sure you want to delete this conversation? This action cannot be undone."
           onCloseDrawer={() => setDrawerOpen(false)}
+          userIsOwner
         />
       </ProfileDrawer>
       <div className="w-full flex border-b-[1px] border-dark dark:border-light justify-between items-center shadow-sm pb-3">
