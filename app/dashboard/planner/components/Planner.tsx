@@ -104,7 +104,6 @@ const Planner: React.FC<PlannerProps> = ({orders, drivers, currentUser, currentC
               </div>
             )}
           </div>
-          <div></div>
         </div>
       </Section>
       <Section fit="h-full w-full xl:w-3/5 flex flex-col">
