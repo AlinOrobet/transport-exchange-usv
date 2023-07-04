@@ -58,7 +58,7 @@ const Map: React.FC<GoogleMapMultiRouteProps> = ({center, locations, details, or
         lat: locations[locations.length - 1].lat,
         lng: locations[locations.length - 1].lng,
       };
-      const waypoints = locations.slice(1, locations.length - 2).map((location: any) => ({
+      const waypoints = locations.slice(1, locations.length - 1).map((location: any) => ({
         location: {lat: location.lat, lng: location.lng, stopover: true},
       }));
       const service = new google.maps.DirectionsService();
